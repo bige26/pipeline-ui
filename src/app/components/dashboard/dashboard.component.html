@@ -1,0 +1,21 @@
+<div class="input-group" style="margin-bottom: 12px;">
+    <span class="input-group-addon">
+        <span class="glyphicon glyphicon-search"></span>
+    </span>
+    <input type="text" [(ngModel)]="searchData" class="form-control" placeholder="Repository name">
+</div>
+<ul class="list-group">
+    <li *ngFor="let repo of repositories | repoFilter: searchData | paginate: { itemsPerPage: 5, currentPage: page}" class="list-group-item">
+        {{repo.name}}
+        <div class="material-switch pull-right">
+            <i *ngIf="repo.active" title="settings" (click)="openSettings(repo)" class="icons fa fa-cogs fa-2x" aria-hidden="true"></i>
+            <i *ngIf="repo.active" title="builds" (click)="openBuilds(repo)" class="icons fa fa-cubes fa-2x" aria-hidden="true"></i>
+            <input [(ngModel)]="repo.active" (ngModelChange)="onChangeStatus(repo)" id="{{repo.name}}" name="someSwitchOption001" type="checkbox"
+            />
+            <label for="{{repo.name}}" class="label-success"></label>
+        </div>
+    </li>
+</ul>
+<div style="text-align: center">
+    <pagination-controls class="my-pagination" (pageChange)="page = $event" autoHide="true" previousLabel="" nextLabel=""></pagination-controls>
+</div>

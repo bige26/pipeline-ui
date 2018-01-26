@@ -1,0 +1,27 @@
+<nav class="navbar navbar-default" *ngIf="currentRoute !== '/login' && currentRoute !== '/'">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <img class="navbar-brand" src="assets/banzai.png">
+    </div>
+
+    <ul class="nav navbar-nav navbar-right">
+      <li>
+        <img class="navbar-brand" src="{{userData?.avatar_url}}">
+      </li>
+      <li>
+        <a href="javascript:void(0)" (click)="logout()">
+          <span class="glyphicon glyphicon-log-out"></span> Logout</a>
+      </li>
+    </ul>
+  </div>
+</nav>
+<div class="container">
+  <div class="row">
+      <div class="col-md-2">
+          Latest builds
+        </div>
+      <div class="col-md-10">
+          <router-outlet></router-outlet>          
+      </div>
+  </div>
+</div>
