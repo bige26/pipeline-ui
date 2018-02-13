@@ -1,0 +1,58 @@
+.provider-card:hover {
+  box-shadow: 0 1px 6px #00d8ff;
+  cursor: pointer;
+}
+
+.provider-card {
+  border-radius: 2px;
+  box-shadow: 0 1px 6px #777;
+  margin: 15px;
+
+  img {
+    height: 140px;
+    padding: 6px;
+  }
+}
+
+.cluster-provider-config {
+  width: 60%;
+  margin: auto;
+}
+
+.glyphicon-remove {
+  color: #ff330a;
+}
+
+.provider-select-item {
+  margin: 5px;
+}
+
+.provider-select-item:hover {
+  background-color: lightgray;
+}
+
+.step-row {
+  width: 80%;
+  margin: auto;
+  .step-number-circle {
+    width: 55px;
+    height: 55px;
+    margin: auto;
+    background: #56b48c;
+    border-radius: 30px;
+    cursor: pointer;
+    .step-number {
+      text-align: center;
+      color: white;
+      font-size: 20px;
+      line-height: 55px;
+      vertical-align: middle;
+    }
+  }
+  .active-step-circle {
+    background: #00B4FF;
+  }
+  .step-label {
+    margin-top: 5px;
+  }
+}

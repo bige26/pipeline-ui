@@ -1,0 +1,64 @@
+<div>
+  <div class="row step-row">
+    <div class="col-xs-4 col-sm-4 text-center" *ngFor="let step of steps">
+      <div class="step-number-circle" [ngClass]="{'active-step-circle': getCurrentStep() === step.step}"
+           (click)="jumpStep(step.step)">
+        <div class="step-number">
+          <span *ngIf="step.status === 'done'; else stepNumber;" class="glyphicon glyphicon-ok"></span>
+          <ng-template #stepNumber>
+            {{step.step}}
+          </ng-template>
+        </div>
+      </div>
+      <div class="step-label">
+        {{step.label}}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" *ngIf="getCurrentStep() == 1">
+  <div class="panel-heading text-center">
+    <h2>Choose provider</h2>
+  </div>
+  <div class="panel-body">
+    <div class="row text-center">
+      <div class="col-md-6" *ngFor="let provider of providers">
+        <div class="provider-card" (click)="selectCluster(provider.id)">
+          <div class="card height-100">
+            <img class="card-img-top" src="{{provider.imgUrl}}">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" *ngIf="getCurrentStep() === 2">
+  <div class="panel-heading text-center">
+    <h2>Choose provider config</h2>
+  </div>
+  <div class="row cluster-provider-config">
+    <div class="list-group">
+      <div class="list-group-item provider-select-item" *ngFor="let i of [0,2,3,4]" (click)="nextStep()">
+        <div class="row">
+          <div class="col-xs-4 col-sm-6">
+            provider {{i}}
+          </div>
+          <div class="col-md-6 text-right">
+            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="panel" *ngIf="getCurrentStep() === 3">
+  <div class="panel-heading text-center">
+    <h2>Configure provider</h2>
+  </div>
+  <div class="panel-body">
+    step_3
+  </div>
+</div>

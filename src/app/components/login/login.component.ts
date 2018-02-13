@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { FormGroup, FormControl } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {Router} from '@angular/router';
+import {FormControl, FormGroup} from '@angular/forms';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,19 +10,17 @@ import { AuthService } from '../../services/auth.service';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(
-    private router: Router,
-    private authService: AuthService    
-  ){}
+  constructor(private router: Router,
+              private authService: AuthService) {
+  }
 
   public registrationForm: FormGroup = new FormGroup({
     token: new FormControl('')
   });
 
   public registration(): void {
-    const self = this;
-    self.authService.setToken(self.registrationForm.get("token").value);
-    self.router.navigate(['dashboard']);
+    this.authService.setToken(this.registrationForm.get('token').value);
+    this.router.navigate(['drone']);
   }
 
   ngOnInit() {

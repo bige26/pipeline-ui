@@ -1,2 +1,19 @@
 export interface Feed {
+    "owner":string,
+    "name":string,
+    "full_name":string,
+    "number":number,
+    "event":string,
+    "status":string,
+    "created_at":number,
+    "started_at":number,
+    "finished_at":number,
+    "commit":string,
+    "branch":string,
+    "ref":string,
+    "remote":string,
+    "message":string,
+    "author":string,
+    "author_avatar":string,
+    "author_email":string
 }

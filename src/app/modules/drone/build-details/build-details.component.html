@@ -1,0 +1,105 @@
+<div *ngIf="isLoading.value">
+  <i class="fa fa-spinner fa-2x fa-spin"></i>
+</div>
+<div *ngIf="!isLoading.value">
+  <div class="col-sm-12">
+    <ul class="breadcrumb col-sm-10">
+      <li>
+        <a href="javascript:void(0)" (click)="openRepositories()">repositories</a>
+      </li>
+      <li>
+        <a href="javascript:void(0)" (click)="openBuilds()">{{title}}</a>
+      </li>
+      <li class="active">{{repository.build}}</li>
+    </ul>
+    <span class="col-sm-2">
+        <div class="btn-group" dropdown>
+            <button type="button" class="btn btn-primary">Action</button>
+            <button type="button" dropdownToggle class="btn btn-primary dropdown-toggle dropdown-toggle-split">
+              <span class="caret"></span>
+              <span class="sr-only">Split button!</span>
+            </button>
+            <ul *dropdownMenu class="dropdown-menu" role="menu">
+              <li role="menuitem" *ngIf="buildDetails.status !== 'running' && buildDetails.status !== 'error'" (click)="restart()"><a class="dropdown-item" href="javascript:void(0)">Restart Build</a></li>
+              <li role="menuitem" *ngIf="buildDetails.status === 'running'" (click)="cancel()"><a class="dropdown-item" href="javascript:void(0)">Cancel Build</a></li>
+              <li class="divider dropdown-divider"></li>
+              <li role="menuitem" (click)="openSettings()"><a class="dropdown-item" href="javascript:void(0)">Settings</a></li>
+            </ul>
+          </div>
+    </span>
+  </div>
+  <div class="col-sm-5">
+    <div *ngIf="buildDetails.status === 'error' || buildDetails.status === 'failure'" class="well well-sm well-danger">{{buildDetails.status | uppercase}}</div>
+    <div *ngIf="buildDetails.status === 'running'" class="well well-sm well-warning">{{buildDetails.status | uppercase}}</div>
+    <div *ngIf="buildDetails.status === 'success'" class="well well-sm well-success">{{buildDetails.status | uppercase}}</div>
+    <div class="text-muted">{{buildDetails.message}}</div>
+    <hr>
+    <div class="row">
+      <div class="build-row col-sm-6">
+        <mat-icon>date_range</mat-icon>
+        <span>{{buildDetails.created_at | elabsedTime}}</span>
+      </div>
+      <div class="build-row col-sm-6">
+        <mat-icon>device_hub</mat-icon>
+        <span>{{buildDetails.branch}}</span>
+      </div>
+      <div class="build-row col-sm-6">
+        <mat-icon>alarm</mat-icon>
+        <span *ngIf="buildDetails.finished_at === undefined || buildDetails.finished_at === 0">{{buildDetails.started_at | elabsedTime}}</span>
+        <span *ngIf="buildDetails.finished_at > 0">{{buildDetails.started_at | durationTime:buildDetails.finished_at}}</span>
+      </div>
+      <div class="build-row col-sm-6">
+        <mat-icon>usb</mat-icon>
+        <span>{{buildDetails.commit | mask}}</span>
+        <span>
+          <a href="{{buildDetails.link_url}}" target="_blank" style="cursor: pointer">
+            <i class="fa fa-external-link to-right"></i>
+          </a>
+        </span>
+      </div>
+    </div>
+    <hr>
+
+    <div *ngFor="let proc of buildDetails.procs" class="list-group">
+      <a *ngFor="let child of proc.children" (click)="showLogs(child)" href="javascript:void(0)" class="list-group-item" [ngClass]="{'list-group-item-success': child.state === 'success', 
+                  'list-group-item-warning': child.state === 'running',
+                  'list-group-item-danger': child.state === 'failure' || child.state === 'killed'}">
+        {{child.name}}
+        <span class="to-right" *ngIf="child.state === 'failure' || child.state === 'killed'">
+          <i class="fa fa-times-circle-o text-danger"></i>
+        </span>
+        <span class="to-right" *ngIf="child.state === 'success'">
+          <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+        </span>
+        <span class="to-right" *ngIf="child.state === 'running'">
+          <i class="fa fa-spinner fa-spin text-warning" aria-hidden="true"></i>
+        </span>
+        <span class="to-right" *ngIf="child.state === 'skipped'">
+            <i class="fa fa-minus-circle" aria-hidden="true"></i>
+        </span>
+        <span class="to-right text-muted timer">{{child.start_time | durationTime:child.end_time}}</span>
+      </a>
+    </div>
+
+  </div>
+
+  <div class="col-sm-7">
+    <div class="well well-sm" *ngIf="isCanceled">
+      <div class="text-danger">{{buildDetails.procs[0].error}}</div>
+    </div>
+
+    <div class="log">
+      <div *ngFor="let log of logs; let i = index">
+        <div class="row">
+          <div class="col-sm-12 col-xs-12">
+            <span *ngIf="i < logs.length - 1" class="col-sm-1 col-xs-1">{{i+1}}</span>
+            <span class="col-sm-10 col-xs-9">{{log.out}}</span>
+            <span class="col-sm-1 col-xs-2" *ngIf="log.time && i < logs.length - 1">{{log.time}}s</span>
+            <span class="col-sm-1 col-xs-2" *ngIf="!log.time && i < logs.length - 1">0s</span>
+          </div>
+        </div>
+      </div>
+      <div class="text-danger" *ngIf="buildDetails.error">{{buildDetails.error}}</div>
+    </div>
+  </div>
+</div>

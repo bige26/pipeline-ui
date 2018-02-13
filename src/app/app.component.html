@@ -1,27 +1,42 @@
-<nav class="navbar navbar-default" *ngIf="currentRoute !== '/login' && currentRoute !== '/'">
+<nav class="navbar navbar-default navbar-fixed-top" *ngIf="currentRoute !== '/login' && currentRoute !== '/'">
   <div class="container-fluid">
     <div class="navbar-header">
-      <img class="navbar-brand" src="assets/banzai.png">
+      <button type="button" class="navbar-toggle" (click)="toggleCollapse()" data-toggle="collapse"
+              data-target="#myNavbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="nav-link" [routerLink]="['drone']">
+        <img class="navbar-brand" src="assets/banzai.png">
+      </a>
     </div>
-
-    <ul class="nav navbar-nav navbar-right">
-      <li>
-        <img class="navbar-brand" src="{{userData?.avatar_url}}">
-      </li>
-      <li>
-        <a href="javascript:void(0)" (click)="logout()">
-          <span class="glyphicon glyphicon-log-out"></span> Logout</a>
-      </li>
-    </ul>
+    <div class="collapse navbar-collapse" [class.show]="show" id="myNavbar">
+      <ul class="nav navbar-nav">
+        <li routerLinkActive="active">
+          <a routerLink="cluster">Cluster management</a>
+        </li>
+        <li routerLinkActive="active">
+          <a href="javascript:void(0)">Deployment</a>
+        </li>
+        <li routerLinkActive="active">
+          <a href="javascript:void(0)">Spotguide</a>
+        </li>
+        <li routerLinkActive="active">
+          <a routerLink="drone">Drone</a>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="hidden-xs">
+          <img class="navbar-brand" src="{{userData?.avatar_url}}">
+        </li>
+        <li>
+          <a href="javascript:void(0)" (click)="logout()">
+            <span class="glyphicon glyphicon-log-out"></span> Logout</a>
+        </li>
+      </ul>
+    </div>
   </div>
 </nav>
-<div class="container">
-  <div class="row">
-      <div class="col-md-2">
-          Latest builds
-        </div>
-      <div class="col-md-10">
-          <router-outlet></router-outlet>          
-      </div>
-  </div>
-</div>
+<ngx-alerts></ngx-alerts>
+<router-outlet></router-outlet>

@@ -1,0 +1,39 @@
+<div class="panel panel-default panel-width" style="margin-bottom: 20px">
+  <div class="panel-heading">
+    <div class="btn-group-sx text-right">
+      <button type="button" class="btn btn-success" (click)="addCluster()"> Add cluster</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel panel-default panel-width">
+  <table class="table table-hover">
+    <thead>
+    <tr>
+      <th class="text-center" scope="col">Col 0</th>
+      <th class="text-center" scope="col">Col 1</th>
+      <th class="text-center" scope="col">Col 2</th>
+      <th class="text-center" scope="col">Col 3</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let cluster of clusters">
+      <th scope="row">{{cluster.name}}</th>
+      <td>text</td>
+      <td>text</td>
+      <td>text</td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="panel text-center empty-custer-width" *ngIf="clusters.length == 0">
+    <div class="panel-heading">
+      <h2>Empty cluster list!</h2>
+      <div class="panel-body">
+        <div class="btn-group-lg">
+          <button type="button" class="btn btn-success" (click)="addCluster()">Create cluster</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

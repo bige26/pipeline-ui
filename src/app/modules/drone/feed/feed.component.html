@@ -1,0 +1,36 @@
+<div class="panel-group">
+  <div 
+  *ngFor="let feed of feeds | paginate: { itemsPerPage: 4, currentPage: page, id: 'feed'}" 
+   class="panel panel-default"
+   [ngClass]="{'panel-success': feed.status === 'success', 
+               'panel-danger': feed.status === 'error' || feed.status === 'failure',
+               'panel-warning': feed.status === 'running'}"
+    (click)="openBuilds(feed)">
+    <div class="panel-heading">
+      {{feed.full_name}}
+      <span *ngIf="feed.status === 'error' || feed.status === 'failure'">
+        <i class="fa fa-times-circle-o text-danger"></i>
+      </span>
+      <span *ngIf="feed.status === 'success'">
+        <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
+      </span>
+      <span *ngIf="feed.status === 'running'">
+        <i class="fa fa-spinner fa-spin text-warning" aria-hidden="true"></i>
+      </span>
+    </div>
+    <div class="panel-body">
+      <div class="build-row">
+        <mat-icon>date_range</mat-icon>                                      
+        <span>{{feed.started_at | elabsedTime}}</span>                        
+      </div>
+      <div class="build-row">
+        <mat-icon>alarm</mat-icon>                                      
+        <span *ngIf="feed.finished_at === undefined || feed.finished_at === 0">{{feed.started_at | elabsedTime}}</span>
+        <span *ngIf="feed.finished_at > 0">{{feed.started_at | durationTime:feed.finished_at}}</span>
+      </div>
+    </div>
+  </div>
+  <div class="text-center">
+    <pagination-controls id="feed" class="my-pagination" (pageChange)="page = $event" autoHide="true" previousLabel="" nextLabel=""></pagination-controls>
+  </div>
+</div>

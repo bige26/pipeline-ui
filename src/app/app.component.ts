@@ -1,33 +1,33 @@
-import { Component } from '@angular/core';
-import { Router, NavigationEnd, NavigationStart } from '@angular/router';
-import { UserService } from './services/user.service';
-import { User } from './models/user';
-import { AuthService } from './services/auth.service';
+import {Component, OnInit} from '@angular/core';
+import {NavigationEnd, Router} from '@angular/router';
+import {UserService} from './services/user.service';
+import {User} from './models/user';
+import {AuthService} from './services/auth.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 
   public currentRoute: string = null;
   public userData: User;
+  private show = false;
 
-  constructor(
-    private router: Router,
-    private userService: UserService,
-    private authService: AuthService
-  ) { }
+  constructor(private router: Router,
+              private userService: UserService,
+              private authService: AuthService) {
+  }
 
   ngOnInit() {
-    const self = this;
-    self.router.events.subscribe((event) => {
+    this.show = false;
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        self.currentRoute = event.url;
-        if (event.url !== '/login') {
-          self.userService.getUser().then(response => {
-            self.userData = response;
+        this.currentRoute = event.url;
+        if (event.url !== '/login' && this.authService.getToken() !== null) {
+          this.userService.getUser().then(response => {
+            this.userData = response;
           });
         }
       }
@@ -35,9 +35,12 @@ export class AppComponent {
   }
 
   public logout(): void {
-    const self = this;
-    self.authService.clear();
-    self.router.navigate(['login']);
+    this.authService.clear();
+    this.router.navigate(['login']);
+  }
+
+  public toggleCollapse() {
+    this.show = !this.show;
   }
 
 }

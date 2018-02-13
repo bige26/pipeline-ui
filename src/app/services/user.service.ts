@@ -1,28 +1,29 @@
-import { Injectable } from '@angular/core';
-import { User } from '../models/user';
-import { Repository } from '../models/repository';
-import { Feed } from '../models/feed';
-import { BaseService } from './base.service';
+import {Injectable} from '@angular/core';
+import {User} from '../models/user';
+import {Repository} from '../models/repository';
+import {Feed} from '../models/feed';
+import {BaseService} from './base.service';
+import {Observable} from 'rxjs';
 
 @Injectable()
 export class UserService {
 
-  public basePath: string = "/api/user";
+  public basePath = '/api/user';
+  private timer = Observable.timer(0, 100000);
 
-  constructor(
-    private baseService: BaseService
-  ) { }
+  constructor(private baseService: BaseService) {
+  }
 
   public getUser(): Promise<User> {
     return this.baseService.get<User>(this.basePath);
   }
 
   public getRepositories(): Promise<Repository[]> {
-    return this.baseService.get<Repository[]>(this.basePath + "/repos?all=true");
+    return this.baseService.get<Repository[]>(this.basePath + '/repos?all=true&flush=true');
   }
 
-  public getLatestFeeds(): Promise<Feed[]> {
-    return this.baseService.get<Feed[]>(this.basePath + "/feed?latest=true");
+  public getLatestFeeds(): Observable<Feed[]> {
+    return this.timer.flatMap(_ => this.baseService.get<Feed[]>(this.basePath + '/feed?latest=true'));
   }
 
 }

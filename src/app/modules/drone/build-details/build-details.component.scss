@@ -1,0 +1,42 @@
+.log {
+    font-size: 14px;
+    padding: 10px;
+    border-radius: 3px; 
+    background: #eceff1;    
+}
+
+.log span:first-child {
+    color: rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+.log span:last-child {
+    color: rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+.log span:nth-child(2) {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.well-danger {
+    background-color: #f2dede !important;   
+    color: #a94442;
+}
+
+.well-warning {
+    background-color: #fcf8e3 !important;   
+    color: #8a6d3b;
+}
+
+.well-success {
+    background-color: #dff0d8 !important;   
+    color: #3c763d;
+}
+
+.timer {
+    margin-right: 10px;
+    font-size: 13px;
+    margin-top: 1px;
+}

@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable()
 export class AuthService {
 
-  private token: string = "droneToken";
+  private token = 'droneToken';
 
-  constructor() { }
+  constructor() {
+  }
 
   public remove() {
     return sessionStorage.removeItem(this.token);

@@ -1,0 +1,88 @@
+<div *ngIf="isLoading.value">
+    <i class="fa fa-spinner fa-2x fa-spin"></i>
+</div>
+<div *ngIf="!isLoading.value">
+    <ul class="breadcrumb">
+        <li>
+          <a href="javascript:void(0)" (click)="beckToDashboard()">repositories</a>
+        </li>
+        <li class="active">{{title}}</li>
+      </ul>    
+      <ul class="list-group">
+
+        <li *ngFor="let build of builds | paginate: { itemsPerPage: 6, currentPage: page, id: 'builds'}" class="list-group-item"
+            (click)="selectBuild(build)" style="cursor: pointer">
+            <div class="row">
+                <div class="col-xs-2">
+                    <span *ngIf="build.status === 'error'">
+                        <h4>
+                            <span class="label label-danger">
+                                Error
+                                <i class="fa fa-times-circle-o"></i>
+                            </span>
+                        </h4>
+                    </span>
+                    <span *ngIf="build.status === 'success'">
+                        <h4>
+                            <span class="label label-success">
+                                Success
+                                <i class="fa fa-check-circle"></i>
+                            </span>
+                        </h4>
+                    </span>
+                    <span *ngIf="build.status === 'running'">
+                        <h4>
+                            <span class="label label-warning">
+                                Running
+                                <i class="fa fa-spinner fa-spin"></i>
+                            </span>
+                        </h4>
+                    </span>
+                    <span *ngIf="build.status === 'failure'">
+                        <h4>
+                            <span class="label label-danger">
+                                Failure
+                                <i class="fa fa-times-circle-o"></i>
+                            </span>
+                        </h4>
+                    </span>
+                </div>
+                <div class="col-xs-4">
+                    <div>#{{build.number}}</div>
+                    <img style="border-radius: 50%" width="25" height="25" src="{{build.author_avatar}}">
+                    <span class="text-muted">{{build.message}}</span>
+                </div>
+
+                <div class="col-xs-2">
+                    <div class="build-row">
+                        <mat-icon>date_range</mat-icon>                                                                  
+                        <span>{{build.started_at | elabsedTime}}</span>                        
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="build-row">
+                        <mat-icon>alarm</mat-icon>                            
+                        <span *ngIf="build.finished_at === undefined || build.finished_at === 0">{{build.started_at | elabsedTime}}</span>
+                        <span *ngIf="build.finished_at > 0">{{build.started_at | durationTime:build.finished_at}}</span>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="build-row">
+                        <mat-icon>usb</mat-icon>                                      
+                        <span>{{build.commit | mask}}</span>
+                    </div>
+                    <div class="build-row">
+                        <mat-icon>device_hub</mat-icon>                                                                  
+                        <span>{{build.branch}}</span>
+                    </div>
+                </div>
+
+            </div>
+        </li>
+    </ul>
+    <div class="text-center">
+            <pagination-controls class="my-pagination" id="builds" (pageChange)="page = $event" autoHide="true" previousLabel="" nextLabel=""></pagination-controls>
+        </div>
+        <div class="text-center" *ngIf="builds.length === 0">No builds!</div>
+        <button type="button" class="btn btn-default" (click)="beckToDashboard()">Back</button> 
+</div>

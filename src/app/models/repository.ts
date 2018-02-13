@@ -21,3 +21,9 @@ export interface Repository {
     "last_build":number,
     "config_file":string
 }
+
+export interface RouterParams {
+    user: string, 
+    repo: string, 
+    build?: number
+}

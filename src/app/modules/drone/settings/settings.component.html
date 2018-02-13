@@ -1,0 +1,161 @@
+<div *ngIf="isLoading.value">
+  <i class="fa fa-spinner fa-2x fa-spin"></i>
+</div>
+<div class="col-sm-12">
+    <ul class="breadcrumb col-sm-10">
+      <li>
+        <a href="javascript:void(0)" (click)="openRepositories()">repositories</a>
+      </li>
+      <li class="active">{{title}}</li>
+    </ul>
+  </div>
+<div *ngIf="!isLoading.value" class="col-sm-12">
+  <accordion>
+    <accordion-group [isOpen]="true" (isOpenChange)="isOpenSettings = !isOpenSettings">
+      <div accordion-heading class="clearfix">
+        <i *ngIf="!isOpenSettings" class="fa fa-chevron-right"></i>
+        <i *ngIf="isOpenSettings" class="fa fa-chevron-down"></i>
+        Settings
+      </div>
+      <form class="form-horizontal" [formGroup]="settingsForm" (ngSubmit)="saveSettings()">
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="repo" class="col-sm-4 col-xs-6">Repository Hooks</label>
+            <div class="col-sm-8 col-xs-6">
+              <div class="checkbox">
+                <input type="checkbox" value="" formControlName="allow_push">push
+              </div>
+              <div class="checkbox">
+                <input type="checkbox" value="" formControlName="allow_pr">pull request
+              </div>
+              <div class="checkbox">
+                <input type="checkbox" value="" formControlName="allow_tag">tag
+              </div>
+              <div class="checkbox">
+                <input type="checkbox" value="" formControlName="allow_deploy">deployment
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+
+          <div class="form-group">
+            <label for="visibility" class="col-sm-4 col-xs-6">Project Visibility</label>
+            <div class="col-sm-8 col-xs-6">
+              <div class="radio">
+                <input type="radio" name="visibility" value="public" formControlName="visibility">public
+              </div>
+              <div class="radio">
+                <input type="radio" name="visibility" value="private" formControlName="visibility">private
+              </div>
+              <div class="radio">
+                <input type="radio" name="visibility" value="internal" formControlName="visibility">internal
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label for="settings" class="col-sm-4 col-xs-6">Project Settings</label>
+            <div class="col-sm-8 col-xs-6">
+              <div class="checkbox">
+                <input type="checkbox" value="" formControlName="gated">protected
+              </div>
+              <div class="checkbox">
+                <input type="checkbox" value="" formControlName="trusted">trusted
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="col-sm-3 col-xs-5" for="timeout">Timeout</label>
+            <div class="col-sm-6 col-xs-6">
+              <div class="input-group">
+                <input type="number" class="form-control" formControlName="timeout">
+                <span class="input-group-addon">
+                  minutes
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-12">
+          <button type="submit" class="btn btn-default">Save</button>
+        </div>
+      </form>
+    </accordion-group>
+    <accordion-group [isOpen]="isOpenSecrets" (isOpenChange)="isOpenSecrets = !isOpenSecrets">
+      <div accordion-heading class="clearfix">
+        <i *ngIf="!isOpenSecrets" class="fa fa-chevron-right"></i>
+        <i *ngIf="isOpenSecrets" class="fa fa-chevron-down"></i>
+        Secrets
+      </div>
+      <div class="col-sm-6">
+        <ul class="list-group">
+          <li *ngFor="let secret of secrets" class="list-group-item">
+            <label>{{secret.name}}</label>
+            <div class="to-right">
+              <button type="submit" class="btn btn-danger btn-sm" (click)="deleteSecret(secret.name)">Delete</button>
+            </div>
+            <div>
+              <span *ngFor="let label of secret.event" class="label label-default">{{label}}</span>
+            </div>
+          </li>
+          <div class="text-center" *ngIf="secrets.length === 0">No secrets!</div>
+        </ul>
+      </div>
+      <div class="col-sm-6">
+        <form class="form-horizontal" [formGroup]="secretsForm" (ngSubmit)="saveSecrets()">
+          <div class="form-group">
+            <input type="text" formControlName="name" placeholder="Secret Name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <textarea placeholder="Secret Value" formControlName="value" class="form-control" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-default" [disabled]="!secretsForm.valid">Save</button>
+          </div>
+        </form>
+      </div>
+    </accordion-group>
+    <accordion-group [isOpen]="isOpenRegistry" (isOpenChange)="isOpenRegistry = !isOpenRegistry">
+      <div accordion-heading class="clearfix">
+        <i *ngIf="!isOpenRegistry" class="fa fa-chevron-right"></i>
+        <i *ngIf="isOpenRegistry" class="fa fa-chevron-down"></i>
+        Registry
+      </div>
+      <div class="col-sm-6">
+        <ul class="list-group">
+          <li *ngFor="let registry of registries" class="list-group-item">
+            <label>{{registry.address}}</label>
+            <span class="to-right">
+              <button type="submit" class="btn btn-danger btn-sm" (click)="deleteRegistry(registry.username)">Delete</button>
+            </span>
+          </li>
+          <div class="text-center" *ngIf="registries.length === 0">No credentials!</div>
+        </ul>
+      </div>
+      <div class="col-sm-6">
+        <form class="form-horizontal" [formGroup]="registryForm" (ngSubmit)="saveRegistry()">
+          <div class="form-group">
+            <input type="text" formControlName="address" placeholder="Registry Address (e.g. docker.io)" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <input type="text" formControlName="username" placeholder="Registry Username" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <textarea placeholder="Registry Password" formControlName="password" class="form-control" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-default" [disabled]="!registryForm.valid">Save</button>
+          </div>
+        </form>
+      </div>
+    </accordion-group>
+  </accordion>
+</div>
+<button type="button" class="btn btn-default" (click)="openRepositories()">Back</button>

@@ -1,0 +1,35 @@
+/* You can add global styles to this file, and also import other style files */
+.text-center {
+  text-align: center
+}
+
+.to-right {
+  float: right;
+}
+
+.my-pagination /deep/ .ngx-pagination {
+  display: inline-block;
+  padding-left: 0;
+  margin: 20px 0;
+  border-radius: 4px;
+  font-size: 20px;
+}
+
+.my-pagination /deep/ .ngx-pagination li {
+  display: inline-block;
+  width: 35px;
+}
+
+.build-row {
+  display: flex;
+}
+
+.build-row > span{
+  margin-left: 5px;
+  margin-top: 2px;
+}
+
+body {
+  margin-top: 70px;
+}
+
