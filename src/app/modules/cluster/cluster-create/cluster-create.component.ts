@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {ClusterProvider, DEFALT_CLUSTER_PROVIDERS} from '../../../models/cluster-model';
+import {ClusterProvider, DEFALT_CLUSTER_PROVIDERS} from '../../../models/cluster.model';
 
 @Component({
   selector: 'app-create-cluster',

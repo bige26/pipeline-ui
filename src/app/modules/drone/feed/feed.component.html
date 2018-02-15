@@ -1,4 +1,7 @@
-<div class="panel-group">
+<div *ngIf="isLoading.value">
+  <i class="fa fa-spinner fa-2x fa-spin"></i>
+</div>
+<div class="panel-group" *ngIf="!isLoading.value">
   <div 
   *ngFor="let feed of feeds | paginate: { itemsPerPage: 4, currentPage: page, id: 'feed'}" 
    class="panel panel-default"

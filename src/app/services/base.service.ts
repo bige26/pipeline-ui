@@ -1,4 +1,3 @@
-import {environment} from '../../environments/environment';
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {AuthService} from './auth.service';
@@ -14,22 +13,38 @@ export class BaseService {
 
     const builtUrl = this.buildUrl(path, param, queryParams);
 
-    return this.http.get<T>(builtUrl, this.generateOptions())
+    return this.http.get<T>(path, this.generateOptions(path))
       .toPromise()
       .catch(this.handleGlobalError);
 
   }
 
   public post<T>(path: string, body: Object = null): Promise<T> {
-    const requestOptions = this.generateOptions();
+    const requestOptions = this.generateOptions(path);
     const builtUrl = this.buildUrl(path, '', {});
 
     return this.http.post<T>(builtUrl, body, requestOptions).toPromise()
       .catch(this.handleGlobalError);
   }
 
+  public put<T>(path: string, body: Object = null): Promise<T> {
+    const requestOptions = this.generateOptions(path);
+    const builtUrl = this.buildUrl(path, '', {});
+
+    return this.http.put<T>(builtUrl, body, requestOptions).toPromise()
+      .catch(this.handleGlobalError);
+  }
+
+  public head<T>(path: string, param: string | number = ''): Promise<T> {
+    const requestOptions = this.generateOptions(path);
+    const builtUrl = this.buildUrl(path, param, {});
+
+    return this.http.head<T>(builtUrl, requestOptions).toPromise()
+      .catch(this.handleGlobalError);
+  }
+
   public patch<T>(path: string, body: Object = null): Promise<T> {
-    const requestOptions = this.generateOptions();
+    const requestOptions = this.generateOptions(path);
     const builtUrl = this.buildUrl(path, '', {});
 
     return this.http.patch<T>(builtUrl, body, requestOptions).toPromise()
@@ -37,19 +52,23 @@ export class BaseService {
   }
 
   public delete<T>(path: string, param: string | number = '', queryParams: Object = {}): Promise<T> {
-    const requestOptions = this.generateOptions();
+    const requestOptions = this.generateOptions(path);
     const builtUrl = this.buildUrl(path, param, queryParams);
 
     return this.http.delete<T>(builtUrl, requestOptions).toPromise()
       .catch(this.handleGlobalError);
   }
 
-  private generateOptions() {
-
+  private generateOptions(path: string) {
     let headers = new HttpHeaders().set('Content-Type', 'application/json');
-    headers = Object.assign(headers, headers.set('Authorization', this.authService.getBearerToken()));
+    if (path.match('/clusters')) {
+      headers = headers.append('Authorization', 'Basic YWRtaW46UGFzczEyMzQ=');
+    } else {
+      headers = Object.assign(headers, headers.set('Authorization', this.authService.getBearerToken()));
+    }
     const options = {
       headers: headers,
+      withCredentials: false
     };
 
     return options;
@@ -57,7 +76,8 @@ export class BaseService {
 
   private buildUrl(path: string, param: string | number, queryParams: Object): string {
     param = param ? '/' + param : '';
-    return `${environment.baseUrl}${path}${param}${this.buildQueryParams(queryParams)}`;
+    console.log(`${path}${param}${this.buildQueryParams(queryParams)}`);
+    return `${path}${param}${this.buildQueryParams(queryParams)}`;
   }
 
   private buildQueryParams(queryParams: Object) {

@@ -5,6 +5,7 @@ import {BuildDetails, BuildLog, Process} from '../../../models/build-details';
 import {RouterParams} from '../../../models/repository';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subscription} from 'rxjs/Subscription';
+import { ElabsedTimePipe } from '../../../shared/pipes/elabsed-time.pipe';
 
 @Component({
   selector: 'app-build-details',
@@ -15,6 +16,7 @@ export class BuildDetailsComponent implements OnInit, OnDestroy {
 
   private buildSub: Subscription = null;
   private logSub: Subscription = null;
+  private routeSub: Subscription = null;  
   public isLoading: BehaviorSubject<boolean> = new BehaviorSubject(false);
   public title = '';
   public repository: RouterParams;
@@ -25,35 +27,40 @@ export class BuildDetailsComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private repositoryService: RepositoryService
+    private repositoryService: RepositoryService,
+    public elapsed: ElabsedTimePipe
   ) { }
 
   ngOnInit() {
     this.isLoading.next(true);
-    this.route.params.subscribe(params => {
+    this.routeSub = this.route.params.subscribe(params => {
       if(this.buildSub) {
         this.buildSub.unsubscribe();
       }
       if(this.logSub){
         this.logSub.unsubscribe();
       }
-      this.buildSub = this.repositoryService.getBuildByNumber(params['user'], params['repo'], params['build']).subscribe(resp => {
-        this.isLoading.next(false);
-        this.buildDetails = resp;
-        this.repository = {user: params['user'], repo: params['repo'], build: params['build']};
-        this.title = params['user'] + '/' + params['repo'];
-        
-        if (this.buildDetails && this.buildDetails.procs && this.buildDetails.procs.length > 0) {
-          if(this.buildDetails.procs[0].error) {
-            this.isCanceled = true;
-          }
-        }
-          /*
-        if (this.buildDetails && this.buildDetails.procs && this.buildDetails.procs.length > 0) {
-          this.showLogs(this.buildDetails.procs[0].children[0]);
-        }*/
+      this.buildSub = this.getBuildByNumber(params['user'], params['repo'], params['build']);
+    });
+  }
 
-      });
+  private getBuildByNumber(user: string, repo: string, build: string) {
+    return this.repositoryService.getBuildByNumber(user, repo, build).subscribe(resp => {
+      this.isLoading.next(false);
+      this.repository = {user: user, repo: repo, build: parseInt(build)};
+      this.title = user + '/' + repo;
+      this.buildDetails = resp;
+      
+      if (this.buildDetails && this.buildDetails.procs && this.buildDetails.procs.length > 0) {
+        if(this.buildDetails.procs[0].error) {
+          this.isCanceled = true;
+        }
+      }
+      /*
+      if (this.buildDetails && this.buildDetails.procs && this.buildDetails.procs.length > 0) {
+        this.showLogs(this.buildDetails.procs[0].children[0]);
+      }*/
+
     });
   }
 
@@ -100,6 +107,9 @@ export class BuildDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
+    if (this.routeSub) {
+      this.routeSub.unsubscribe();
+    }
     if (this.buildSub) {
       this.buildSub.unsubscribe();
     }

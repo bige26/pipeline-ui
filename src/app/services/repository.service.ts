@@ -13,8 +13,8 @@ export class RepositoryService {
 
   private basePath: string = '/api/repos/';
   private buildTimer = Observable.timer(0, 100000);
-  private buildDetailsTimer = Observable.timer(0,3000);
-  private buildLogsTimer = Observable.timer(0,100000);
+  private buildDetailsTimer = Observable.timer(0,2000);
+  private buildLogsTimer = Observable.timer(0,3000);
   
   constructor(private baseService: BaseService) {
   }
