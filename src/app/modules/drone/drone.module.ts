@@ -9,6 +9,7 @@ import {SettingsComponent} from './settings/settings.component';
 import {RepositoryService} from '../../services/repository.service';
 import {DroneRoutingModule} from './drone-routing.module';
 import { BsDropdownModule } from 'ngx-bootstrap';
+import { ElabsedTimePipe } from '../../shared/pipes/elabsed-time.pipe';
 
 @NgModule({
   imports: [
@@ -25,7 +26,8 @@ import { BsDropdownModule } from 'ngx-bootstrap';
     DroneComponent
   ],
   providers: [
-    RepositoryService
+    RepositoryService,
+    ElabsedTimePipe
   ]
 })
 export class DroneModule {

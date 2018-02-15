@@ -12,7 +12,10 @@ import {AuthService} from '../services/auth.service';
 import {BaseService} from '../services/base.service';
 import {AuthGuard} from '../services/auth.guard';
 import {UserService} from '../services/user.service';
-import { DurationTimePipe } from './pipes/duration-time.pipe';
+import {DurationTimePipe} from './pipes/duration-time.pipe';
+import {ClusterService} from '../services/cluster.service';
+import {DeploymentService} from '../services/deployment.service';
+import {StatusService} from '../services/status.service';
 
 @NgModule({
   declarations: [
@@ -45,7 +48,10 @@ export class SharedModule {
         AuthService,
         BaseService,
         AuthGuard,
-        UserService
+        UserService,
+        ClusterService,
+        DeploymentService,
+        StatusService
       ]
     };
   }

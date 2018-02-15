@@ -251,7 +251,7 @@ export interface GetClusterInfoAmazon {
   Ip: string;
 }
 
-export interface GerClusterInfoAzure {
+export interface GetClusterInfoAzure {
   status_code: number;
   message: AzureValue;
 }
@@ -283,23 +283,27 @@ export interface UpdateClusterRequest {
   properties: UpdateClusterProperties;
 }
 
-export interface HelmDeploymentType {
-  name: string;
-  releasename: string;
-  version: string;
-  values: Object;
-}
-
-export interface BansaiHelmInstall {
-  kube_context: string;
-  namespace: string;
-  upgrade: boolean;
-  service_account: string;
-  canary_image: boolean;
-  tiller_image: string;
-  history_max: number;
-}
-
 export interface Status {
+  status: number;
+}
+
+export interface ClusterSuccessResponse {
+  status: string;
+  message: string;
+  propertyId: number;
+}
+
+export interface ClusterStatusResponse {
+  status: number;
+  message: string;
+}
+
+export interface FetchClusterConfigResponse {
+  status: number;
+  data: string;
+}
+
+export interface ClusterRepresentationResponse {
+  data: ClusterRepresentation[];
   status: number;
 }

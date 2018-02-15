@@ -22,7 +22,6 @@
             <ul *dropdownMenu class="dropdown-menu" role="menu">
               <li role="menuitem" *ngIf="buildDetails.status !== 'running' && buildDetails.status !== 'error'" (click)="restart()"><a class="dropdown-item" href="javascript:void(0)">Restart Build</a></li>
               <li role="menuitem" *ngIf="buildDetails.status === 'running'" (click)="cancel()"><a class="dropdown-item" href="javascript:void(0)">Cancel Build</a></li>
-              <li class="divider dropdown-divider"></li>
               <li role="menuitem" (click)="openSettings()"><a class="dropdown-item" href="javascript:void(0)">Settings</a></li>
             </ul>
           </div>
@@ -37,15 +36,15 @@
     <div class="row">
       <div class="build-row col-sm-6">
         <mat-icon>date_range</mat-icon>
-        <span>{{buildDetails.created_at | elabsedTime}}</span>
+        <span>{{elapsed.transform(buildDetails.started_at)}}</span>                        
       </div>
       <div class="build-row col-sm-6">
         <mat-icon>device_hub</mat-icon>
         <span>{{buildDetails.branch}}</span>
-      </div>
+      </div>  
       <div class="build-row col-sm-6">
         <mat-icon>alarm</mat-icon>
-        <span *ngIf="buildDetails.finished_at === undefined || buildDetails.finished_at === 0">{{buildDetails.started_at | elabsedTime}}</span>
+        <span *ngIf="buildDetails.finished_at === undefined || buildDetails.finished_at === 0">{{elapsed.transform(buildDetails.started_at)}}</span>
         <span *ngIf="buildDetails.finished_at > 0">{{buildDetails.started_at | durationTime:buildDetails.finished_at}}</span>
       </div>
       <div class="build-row col-sm-6">
@@ -77,7 +76,10 @@
         <span class="to-right" *ngIf="child.state === 'skipped'">
             <i class="fa fa-minus-circle" aria-hidden="true"></i>
         </span>
-        <span class="to-right text-muted timer">{{child.start_time | durationTime:child.end_time}}</span>
+        <span class="to-right text-muted timer">
+          <span *ngIf="child.end_time">{{child.start_time | durationTime:child.end_time}}</span>
+          <span *ngIf="child.end_time === undefined">{{elapsed.transform(child.start_time)}}</span>
+        </span>
       </a>
     </div>
 

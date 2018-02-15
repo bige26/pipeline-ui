@@ -5,30 +5,23 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class ElabsedTimePipe implements PipeTransform {
 
-  transform(startDate: number, endDate?: number): string {
+  transform(startDate: number): string {
 
-    let current;
-
-    if (endDate === undefined) {
-      current = new Date().valueOf();
-    } else {
-      current = endDate * 1000;
-    }
-
+    let current = new Date().valueOf();
     if (startDate === undefined) {
       return '---';
     }
 
-    const input = new Date(startDate * 1000).valueOf();
+    const start = new Date(startDate * 1000).valueOf();
     const msPerMinute = 60 * 1000;
     const msPerHour = msPerMinute * 60;
     const msPerDay = msPerHour * 24;
     const msPerMonth = msPerDay * 30;
     const msPerYear = msPerDay * 365;
 
-    const elapsed = current - input;
+    const elapsed = current - start;
 
-    if (input === NaN) {
+    if (start === NaN) {
       return '---';
     } else if (elapsed < msPerMinute) {
       return Math.round(elapsed / 1000) + ' seconds';
