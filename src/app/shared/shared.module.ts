@@ -5,7 +5,6 @@ import {NgxPaginationModule} from 'ngx-pagination';
 import {MatIconModule} from '@angular/material';
 import {ElabsedTimePipe} from './pipes/elabsed-time.pipe';
 import {MaskPipe} from './pipes/mask.pipe';
-import {RepoFilterPipe} from './pipes/repo-filter.pipe';
 import {AlertModule} from 'ngx-alerts';
 import {AccordionModule} from 'ngx-bootstrap';
 import {AuthService} from '../services/auth.service';
@@ -16,10 +15,11 @@ import {DurationTimePipe} from './pipes/duration-time.pipe';
 import {ClusterService} from '../services/cluster.service';
 import {DeploymentService} from '../services/deployment.service';
 import {StatusService} from '../services/status.service';
+import {FilterPipe} from "./pipes/filter.pipe";
 
 @NgModule({
   declarations: [
-    RepoFilterPipe,
+    FilterPipe,
     MaskPipe,
     ElabsedTimePipe,
     DurationTimePipe
@@ -32,7 +32,7 @@ import {StatusService} from '../services/status.service';
     MatIconModule,
     AccordionModule,
     AlertModule,
-    RepoFilterPipe,
+    FilterPipe,
     MaskPipe,
     ElabsedTimePipe,
     DurationTimePipe

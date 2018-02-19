@@ -10,12 +10,14 @@ import {RepositoryService} from '../../services/repository.service';
 import {DroneRoutingModule} from './drone-routing.module';
 import { BsDropdownModule } from 'ngx-bootstrap';
 import { ElabsedTimePipe } from '../../shared/pipes/elabsed-time.pipe';
+import { ClipboardModule } from 'ngx-clipboard';
 
 @NgModule({
   imports: [
     SharedModule,
     DroneRoutingModule,
-    BsDropdownModule.forRoot()
+    BsDropdownModule.forRoot(),
+    ClipboardModule
   ],
   declarations: [
     FeedComponent,

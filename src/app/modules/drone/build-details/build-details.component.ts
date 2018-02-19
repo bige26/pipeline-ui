@@ -1,11 +1,13 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, NgZone} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {RepositoryService} from '../../../services/repository.service';
 import {BuildDetails, BuildLog, Process} from '../../../models/build-details';
 import {RouterParams} from '../../../models/repository';
 import {BehaviorSubject} from 'rxjs/BehaviorSubject';
 import {Subscription} from 'rxjs/Subscription';
-import { ElabsedTimePipe } from '../../../shared/pipes/elabsed-time.pipe';
+import {ElabsedTimePipe} from '../../../shared/pipes/elabsed-time.pipe';
+import {Location} from '@angular/common';
+import {AlertService} from 'ngx-alerts';
 
 @Component({
   selector: 'app-build-details',
@@ -22,13 +24,17 @@ export class BuildDetailsComponent implements OnInit, OnDestroy {
   public repository: RouterParams;
   public buildDetails: BuildDetails;
   public logs: BuildLog[] = [];
+  public logMessage: string = "";
   public isCanceled: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
+    private zone: NgZone,
     private router: Router,
     private repositoryService: RepositoryService,
-    public elapsed: ElabsedTimePipe
+    public elapsed: ElabsedTimePipe,
+    private location:Location,
+    private alertService: AlertService
   ) { }
 
   ngOnInit() {
@@ -40,14 +46,17 @@ export class BuildDetailsComponent implements OnInit, OnDestroy {
       if(this.logSub){
         this.logSub.unsubscribe();
       }
-      this.buildSub = this.getBuildByNumber(params['user'], params['repo'], params['build']);
+      this.buildSub = this.getBuildByNumber(params['user'], params['repo'], params['build'], params['pid']);
     });
   }
 
-  private getBuildByNumber(user: string, repo: string, build: string) {
+  private getBuildByNumber(user: string, repo: string, build: number, pid: number) {
     return this.repositoryService.getBuildByNumber(user, repo, build).subscribe(resp => {
       this.isLoading.next(false);
-      this.repository = {user: user, repo: repo, build: parseInt(build)};
+      if(pid === undefined || pid === null) {
+        pid = 2;
+      } 
+      this.repository = {user: user, repo: repo, build: build, pid: pid};
       this.title = user + '/' + repo;
       this.buildDetails = resp;
       
@@ -55,39 +64,51 @@ export class BuildDetailsComponent implements OnInit, OnDestroy {
         if(this.buildDetails.procs[0].error) {
           this.isCanceled = true;
         }
-      }
-      /*
+      }    
+      
       if (this.buildDetails && this.buildDetails.procs && this.buildDetails.procs.length > 0) {
-        this.showLogs(this.buildDetails.procs[0].children[0]);
-      }*/
+        if(this.buildDetails.status === 'running') {
+          this.streamLogs();          
+        } else {
+          this.showLogs(pid);                    
+        }
+      }
 
     });
   }
 
+  private streamLogs() {
+    this.logSub = this.repositoryService.getBuildStreamLogs(this.repository.user, this.repository.repo, this.repository.build, 1).subscribe(resp => {
+      console.log(resp);
+    });
+  }
+
   public openSettings() {
-    this.repository.build = undefined;
-    this.router.navigate(['drone/settings', this.repository]);
+    this.router.navigate(['drone/settings', {user: this.repository.user, repo: this.repository.repo}]);
   }
 
   public openBuilds() {
-    this.repository.build = undefined;
-    this.router.navigate(['drone/builds', this.repository]);
+    this.router.navigate(['drone/builds', {user: this.repository.user, repo: this.repository.repo}]);
   }
 
-  public showLogs(process: Process) {
-    if(this.logSub){
-      this.logSub.unsubscribe();
-    }
-    this.logSub = this.repositoryService.getBuildLogs(this.repository.user, this.repository.repo, this.buildDetails.number, process.pid).subscribe(
+  public openLog(pid: number) {
+    this.repository.pid = pid;  
+    const url = this
+    .router
+    .createUrlTree([this.repository], {relativeTo: this.route})
+    .toString();
+
+    this.location.go(url);
+    this.showLogs(pid);
+  }
+
+  public showLogs(pid: number) {
+   
+    this.repositoryService.getBuildLogs(this.repository.user, this.repository.repo, this.buildDetails.number, pid).then(
       logs => {
         this.logs = logs;
-        const exitCode: BuildLog = {
-          out: 'exit code ' + process.exit_code,
-          pos: undefined,
-          time: undefined,
-          proc: process.name
-        }
-        this.logs.push(exitCode);
+        this.logMessage = "";
+        this.logMessage = this.logs.map(log => log.out).join("");
       },
       error => {
         this.logs = [];
@@ -99,11 +120,15 @@ export class BuildDetailsComponent implements OnInit, OnDestroy {
   }
 
   public restart() {
-    this.repositoryService.restartBuild(this.repository.user, this.repository.repo, this.buildDetails.number);
+    this.repositoryService.restartBuild(this.repository.user, this.repository.repo, this.buildDetails.number).then(_ => {
+      this.alertService.success('Successfully restarted your build!');      
+    });
   }
 
   public cancel() {
-    this.repositoryService.cancelBuild(this.repository.user, this.repository.repo, this.buildDetails.number, 1);    
+    this.repositoryService.cancelBuild(this.repository.user, this.repository.repo, this.buildDetails.number, 1).then(_ => {
+      this.alertService.success('Successfully canceled your build!');      
+    });    
   }
 
   ngOnDestroy() {

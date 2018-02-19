@@ -13,35 +13,44 @@
       <li class="active">{{repository.build}}</li>
     </ul>
     <span class="col-sm-2">
-        <div class="btn-group" dropdown>
-            <button type="button" class="btn btn-primary">Action</button>
-            <button type="button" dropdownToggle class="btn btn-primary dropdown-toggle dropdown-toggle-split">
-              <span class="caret"></span>
-              <span class="sr-only">Split button!</span>
-            </button>
-            <ul *dropdownMenu class="dropdown-menu" role="menu">
-              <li role="menuitem" *ngIf="buildDetails.status !== 'running' && buildDetails.status !== 'error'" (click)="restart()"><a class="dropdown-item" href="javascript:void(0)">Restart Build</a></li>
-              <li role="menuitem" *ngIf="buildDetails.status === 'running'" (click)="cancel()"><a class="dropdown-item" href="javascript:void(0)">Cancel Build</a></li>
-              <li role="menuitem" (click)="openSettings()"><a class="dropdown-item" href="javascript:void(0)">Settings</a></li>
-            </ul>
-          </div>
+      <div class="btn-group" dropdown>
+        <button type="button" class="btn btn-default">Action</button>
+        <button type="button" dropdownToggle class="btn btn-default dropdown-toggle dropdown-toggle-split">
+          <span class="caret"></span>
+          <span class="sr-only">Split button!</span>
+        </button>
+        <ul *dropdownMenu class="dropdown-menu" role="menu">
+          <li role="menuitem" *ngIf="buildDetails.status !== 'running' && buildDetails.status !== 'error'" (click)="restart()">
+            <a class="dropdown-item" href="javascript:void(0)">Restart Build</a>
+          </li>
+          <li role="menuitem" *ngIf="buildDetails.status === 'running'" (click)="cancel()">
+            <a class="dropdown-item" href="javascript:void(0)">Cancel Build</a>
+          </li>
+          <li role="menuitem" (click)="openSettings()">
+            <a class="dropdown-item" href="javascript:void(0)">Settings</a>
+          </li>
+        </ul>
+      </div>
     </span>
   </div>
   <div class="col-sm-5">
     <div *ngIf="buildDetails.status === 'error' || buildDetails.status === 'failure'" class="well well-sm well-danger">{{buildDetails.status | uppercase}}</div>
     <div *ngIf="buildDetails.status === 'running'" class="well well-sm well-warning">{{buildDetails.status | uppercase}}</div>
     <div *ngIf="buildDetails.status === 'success'" class="well well-sm well-success">{{buildDetails.status | uppercase}}</div>
-    <div class="text-muted">{{buildDetails.message}}</div>
+    <div class="build-row">
+      <img style="border-radius: 50%" width="25" height="25" src="{{buildDetails.author_avatar}}">
+      <span class="text-muted">{{buildDetails.message}}</span>
+    </div>
     <hr>
     <div class="row">
       <div class="build-row col-sm-6">
         <mat-icon>date_range</mat-icon>
-        <span>{{elapsed.transform(buildDetails.started_at)}}</span>                        
+        <span>{{elapsed.transform(buildDetails.started_at)}}</span>
       </div>
       <div class="build-row col-sm-6">
         <mat-icon>device_hub</mat-icon>
         <span>{{buildDetails.branch}}</span>
-      </div>  
+      </div>
       <div class="build-row col-sm-6">
         <mat-icon>alarm</mat-icon>
         <span *ngIf="buildDetails.finished_at === undefined || buildDetails.finished_at === 0">{{elapsed.transform(buildDetails.started_at)}}</span>
@@ -60,7 +69,9 @@
     <hr>
 
     <div *ngFor="let proc of buildDetails.procs" class="list-group">
-      <a *ngFor="let child of proc.children" (click)="showLogs(child)" href="javascript:void(0)" class="list-group-item" [ngClass]="{'list-group-item-success': child.state === 'success', 
+      <a *ngFor="let child of proc.children" (click)="openLog(child.pid)" href="javascript:void(0)" class="list-group-item" 
+      [ngClass]="{
+                  'list-group-item-success': child.state === 'success', 
                   'list-group-item-warning': child.state === 'running',
                   'list-group-item-danger': child.state === 'failure' || child.state === 'killed'}">
         {{child.name}}
@@ -74,7 +85,7 @@
           <i class="fa fa-spinner fa-spin text-warning" aria-hidden="true"></i>
         </span>
         <span class="to-right" *ngIf="child.state === 'skipped'">
-            <i class="fa fa-minus-circle" aria-hidden="true"></i>
+          <i class="fa fa-minus-circle" aria-hidden="true"></i>
         </span>
         <span class="to-right text-muted timer">
           <span *ngIf="child.end_time">{{child.start_time | durationTime:child.end_time}}</span>
@@ -82,22 +93,21 @@
         </span>
       </a>
     </div>
-
   </div>
 
   <div class="col-sm-7">
     <div class="well well-sm" *ngIf="isCanceled">
       <div class="text-danger">{{buildDetails.procs[0].error}}</div>
     </div>
-
-    <div class="log">
+    <div class="well">
+      <mat-icon title="copy" style="cursor: pointer" *ngIf="logs.length > 0" class="to-right" ngxClipboard [cbContent]="logMessage">content_copy</mat-icon>
       <div *ngFor="let log of logs; let i = index">
         <div class="row">
           <div class="col-sm-12 col-xs-12">
-            <span *ngIf="i < logs.length - 1" class="col-sm-1 col-xs-1">{{i+1}}</span>
+            <span *ngIf="i < logs.length" class="col-sm-1 col-xs-1 text-muted">{{i+1}}</span>
             <span class="col-sm-10 col-xs-9">{{log.out}}</span>
-            <span class="col-sm-1 col-xs-2" *ngIf="log.time && i < logs.length - 1">{{log.time}}s</span>
-            <span class="col-sm-1 col-xs-2" *ngIf="!log.time && i < logs.length - 1">0s</span>
+            <span class="col-sm-1 col-xs-2 text-muted" *ngIf="log.time && i < logs.length">{{log.time}}s</span>
+            <span class="col-sm-1 col-xs-2 text-muted" *ngIf="!log.time && i < logs.length">0s</span>
           </div>
         </div>
       </div>

@@ -25,5 +25,6 @@ export interface Repository {
 export interface RouterParams {
     user: string, 
     repo: string, 
-    build?: number
+    build?: number,
+    pid?: number
 }

@@ -24,7 +24,7 @@
   display: flex;
 }
 
-.build-row > span{
+.build-row > span {
   margin-left: 5px;
   margin-top: 2px;
 }
@@ -33,3 +33,34 @@ body {
   margin-top: 70px;
 }
 
+.vertical-middle {
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+app-cluster-list {
+  accordion-group.panel {
+    .panel-heading {
+      border-radius: 0px;
+    }
+    &.panel-open {
+      .card.cluster-list-group .panel-heading.card-header {
+        background-color: #dddddd;
+      }
+    }
+    .panel-group .panel-heading {
+      padding: 0px;
+    }
+    .card.cluster-list-group {
+      & .panel-heading.card-header:hover {
+        background-color: #dddddd;
+      }
+      border: 0px;
+      box-shadow: none;
+      border-radius: 0px;
+      border-bottom: 1px solid #ddd;
+      margin-bottom: -5px;
+    }
+  }
+}

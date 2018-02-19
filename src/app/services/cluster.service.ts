@@ -50,16 +50,16 @@ export class ClusterService {
   }
 
   public fetchClusterConfig(id: number): Promise<FetchClusterConfigResponse> {
-    return this.baseService.get<FetchClusterConfigResponse>(this.basePath + id + '/config');
+    return this.baseService.get<FetchClusterConfigResponse>(this.basePath + '/' + id + '/config');
   }
 
   // TODO: response type missing
   public getPublicEndpoints(id: number): Promise<any> {
-    return this.baseService.get(this.basePath + id + '/endpoints');
+    return this.baseService.get(this.basePath + '/' + id + '/endpoints');
   }
 
   public initHelmCluster(id: number, bansaiHelmInstall: BansaiHelmInstall): Promise<BansaiHelmInstall> {
-    return this.baseService.post(this.basePath + id + '/helminit', bansaiHelmInstall);
+    return this.baseService.post(this.basePath + '/' + id + '/helminit', bansaiHelmInstall);
   }
 
 }

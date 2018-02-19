@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {ClusterProvider, DEFALT_CLUSTER_PROVIDERS} from '../../../models/cluster.model';
+import {FormBuilder, FormGroup} from "@angular/forms";
 
 @Component({
   selector: 'app-create-cluster',
@@ -8,6 +9,8 @@ import {ClusterProvider, DEFALT_CLUSTER_PROVIDERS} from '../../../models/cluster
   styleUrls: ['./cluster-create.component.scss']
 })
 export class ClusterCreateComponent implements OnInit {
+
+  public configForm: FormGroup;
 
   public providers: Array<ClusterProvider> = [];
   public step = 1;
@@ -30,11 +33,14 @@ export class ClusterCreateComponent implements OnInit {
   ];
 
 
-  constructor(private router: Router) {
+  constructor(private router: Router,
+              private formBuilder: FormBuilder) {
   }
 
   ngOnInit() {
     this.providers = DEFALT_CLUSTER_PROVIDERS;
+
+    this.configForm = this.formBuilder.group({});
   }
 
   selectCluster(id: string) {

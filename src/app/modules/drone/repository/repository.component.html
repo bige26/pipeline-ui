@@ -1,27 +1,39 @@
 <div *ngIf="isLoading.value">
-    <i class="fa fa-spinner fa-2x fa-spin"></i>
+  <i class="fa fa-spinner fa-2x fa-spin"></i>
 </div>
 <div *ngIf="!isLoading.value">
+  <div class="col-sm-10">
     <div class="input-group" style="margin-bottom: 12px;">
-        <span class="input-group-addon">
-            <span class="glyphicon glyphicon-search"></span>
-        </span>
-        <input type="text" [(ngModel)]="searchData" class="form-control" placeholder="Repository name">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-search"></span>
+            </span>
+      <input type="text" [(ngModel)]="searchData" class="form-control" placeholder="Repository name">
     </div>
+  </div>
+  <div class="col-sm-2">
+    <button class="btn btn-default" (click)="getRepositories()">Refresh</button>
+  </div>
+  <div class="col-sm-12">
     <ul class="list-group">
-        <li *ngFor="let repo of repositories | repoFilter: searchData | paginate: { itemsPerPage: 8, currentPage: page, id: 'repos'}"
-            class="list-group-item">
-            {{repo.full_name}}
-            <div class="material-switch pull-right">
-                <i *ngIf="repo.active" title="settings" (click)="openSettings(repo)" class="icons fa fa-cogs fa-2x" aria-hidden="true"></i>
-                <i *ngIf="repo.active" title="builds" (click)="openBuilds(repo)" class="icons fa fa-cubes fa-2x" aria-hidden="true"></i>
-                <input [(ngModel)]="repo.active" (ngModelChange)="onChangeStatus(repo)" id="{{repo.name}}" name="someSwitchOption001" type="checkbox"
-                />
-                <label for="{{repo.name}}" class="label-success"></label>
-            </div>
-        </li>
+      <li
+        *ngFor="let repo of repositories | searchFilter: searchData:'full_name' | paginate: { itemsPerPage: 8, currentPage: page, id: 'repos'}"
+        class="list-group-item">
+        {{repo.full_name}}
+        <div class="material-switch pull-right">
+          <i *ngIf="repo.active" title="settings" (click)="openSettings(repo)" class="icons fa fa-cogs fa-2x"
+             aria-hidden="true"></i>
+          <i *ngIf="repo.active" title="builds" (click)="openBuilds(repo)" class="icons fa fa-cubes fa-2x"
+             aria-hidden="true"></i>
+          <input [(ngModel)]="repo.active" (ngModelChange)="onChangeStatus(repo)" id="{{repo.name}}"
+                 name="someSwitchOption001" type="checkbox"
+          />
+          <label for="{{repo.name}}" class="label-success"></label>
+        </div>
+      </li>
     </ul>
     <div class="text-center">
-        <pagination-controls class="my-pagination" id="repos" (pageChange)="page = $event" autoHide="true" previousLabel="" nextLabel=""></pagination-controls>
+      <pagination-controls class="my-pagination" id="repos" (pageChange)="page = $event" autoHide="true"
+                           previousLabel="" nextLabel=""></pagination-controls>
     </div>
+  </div>
 </div>

@@ -46,6 +46,7 @@ export class BuildsComponent implements OnInit, OnDestroy {
 
   public selectBuild(build: Build) {
     this.repository.build = build.number;
+    this.repository.pid = 2;
     this.router.navigate(['drone/build', this.repository]);
   }
 

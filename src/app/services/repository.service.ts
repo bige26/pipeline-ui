@@ -1,11 +1,10 @@
-import {Injectable} from '@angular/core';
+import {Injectable, NgZone} from '@angular/core';
 import {BaseService} from './base.service';
 import {Repository} from '../models/repository';
 import {Build} from '../models/build';
 import {BuildDetails, BuildLog} from '../models/build-details';
 import {Secret} from '../models/secret';
 import {Registry} from '../models/registry';
-
 import {Observable} from 'rxjs';
 
 @Injectable()
@@ -13,10 +12,14 @@ export class RepositoryService {
 
   private basePath: string = '/api/repos/';
   private buildTimer = Observable.timer(0, 100000);
-  private buildDetailsTimer = Observable.timer(0,2000);
-  private buildLogsTimer = Observable.timer(0,3000);
+  private buildDetailsTimer = Observable.timer(0,300000);
+  private buildLogsTimer = Observable.timer(0,1000000);
+  private eventSource: any = window['EventSource'];  
   
-  constructor(private baseService: BaseService) {
+  constructor(
+    private baseService: BaseService,
+    private zone: NgZone
+  ) {
   }
 
   public activate(owner: string, name: string): Promise<Repository> {
@@ -31,7 +34,7 @@ export class RepositoryService {
     return this.buildTimer.flatMap(_ => this.baseService.get<Build[]>(this.buildBasePath(owner, name) + '/' + 'builds'));
   }
 
-  public getBuildByNumber(owner: string, name: string, buildNumber: string): Observable<BuildDetails> {
+  public getBuildByNumber(owner: string, name: string, buildNumber: number): Observable<BuildDetails> {
     return this.buildDetailsTimer.flatMap(_ => this.baseService.get<BuildDetails>(this.buildBasePath(owner, name) + '/' + 'builds/' + buildNumber));
   }
 
@@ -43,8 +46,18 @@ export class RepositoryService {
     return this.baseService.delete<void>(this.buildBasePath(owner, name) + '/' + 'builds/' + buildNumber + '/' + job);
   }
 
-  public getBuildLogs(owner: string, name: string, buildNumber: number, processId: number): Observable<BuildLog[]> {
-    return this.buildLogsTimer.flatMap(_ => this.baseService.get<BuildLog[]>(this.buildBasePath(owner, name) + '/' + 'logs/' + buildNumber + '/' + processId));
+  public getBuildLogs(owner: string, name: string, buildNumber: number, processId: number): Promise<BuildLog[]> {
+    return this.baseService.get<BuildLog[]>(this.buildBasePath(owner, name) + '/' + 'logs/' + buildNumber + '/' + processId);
+  }
+
+  public getBuildStreamLogs(owner: string, name: string, buildNumber: number, processId: number): Observable<any> {
+    return Observable.create(observer => {
+      const eventSource = new this.eventSource(this.buildBasePath(owner, name, '/stream/logs/') + '/' + buildNumber + '/' + processId);
+      eventSource.onmessage = logs => this.zone.run(() => observer.next(JSON.parse(logs.data)));
+      eventSource.onerror = error => this.zone.run(() => observer.error(error));
+      return () => eventSource.close();
+    });
+    
   }
 
   public getRepositoy(owner: string, name: string): Promise<Repository> {
@@ -79,8 +92,12 @@ export class RepositoryService {
     return this.baseService.delete<void>(this.buildBasePath(owner, name) + '/registry/' + registryName);
   }
 
-  private buildBasePath(owner: string, name: string): string {
-    return this.basePath + owner + '/' + name;
+  private buildBasePath(owner: string, name: string, otherPath?: string): string {
+    if(otherPath) {
+      return otherPath + owner + '/' + name;      
+    } else {
+      return this.basePath + owner + '/' + name;      
+    }
   }
 
 }

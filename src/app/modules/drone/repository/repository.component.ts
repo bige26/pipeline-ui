@@ -22,6 +22,10 @@ export class RepositoryComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.getRepositories();
+  }
+
+  public getRepositories() {
     this.isLoading.next(true);
     this.userService.getRepositories().then(response => {
       this.repositories = response;

@@ -4,6 +4,7 @@ import {ClusterCreateComponent} from './cluster-create/cluster-create.component'
 import {ClusterComponent} from './cluster.component';
 import {ClusterRoutingModule} from './cluster-routing.module';
 import {ClusterListComponent} from './cluster-list/cluster-list.component';
+import {ClusterDetailComponent} from './cluster-detail/cluster-detail.component';
 
 @NgModule({
   imports: [
@@ -13,7 +14,8 @@ import {ClusterListComponent} from './cluster-list/cluster-list.component';
   declarations: [
     ClusterComponent,
     ClusterCreateComponent,
-    ClusterListComponent
+    ClusterListComponent,
+    ClusterDetailComponent
   ]
 })
 export class ClusterModule {

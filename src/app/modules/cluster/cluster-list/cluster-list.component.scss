@@ -1,9 +1,26 @@
-.panel-width {
-  width: 85%;
+.detail-width {
+  width: 90%;
   margin: auto;
+  height: 100%;
 }
 
 .empty-custer-width {
   width: 40%;
   margin: auto;
+}
+
+.cluster-row {
+  font-size: 14px;
+}
+
+.cluster-heading-panel {
+  margin-bottom: 5px;
+  .cluster-heading {
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+
+.cluster-row-height {
+  height: 42px;
 }
