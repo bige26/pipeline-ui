@@ -9,18 +9,33 @@
   margin: auto;
 }
 
+.selected-row {
+  background-color: #dddddd;
+}
+
 .cluster-row {
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .cluster-heading-panel {
   margin-bottom: 5px;
   .cluster-heading {
-    font-size: 16px;
+    font-size: 13px;
     font-weight: bold;
   }
 }
 
-.cluster-row-height {
-  height: 42px;
+.cluster-icons {
+  width: 30px;
 }
+
+.cluster-row-height {
+  height: 30px;
+}
+
+.cluster-list-actions {
+  .glyphicon-cog {
+    color: gray;
+  }
+}
+

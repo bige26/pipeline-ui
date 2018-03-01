@@ -3,6 +3,7 @@
 </div>
 <div *ngIf="!isLoading.value">
   <div class="col-sm-12">
+    <div id="up"></div>
     <ul class="breadcrumb col-sm-10">
       <li>
         <a href="javascript:void(0)" (click)="openRepositories()">repositories</a>
@@ -10,7 +11,7 @@
       <li>
         <a href="javascript:void(0)" (click)="openBuilds()">{{title}}</a>
       </li>
-      <li class="active">{{repository.build}}</li>
+      <li class="active">{{routerParams.build}}</li>
     </ul>
     <span class="col-sm-2">
       <div class="btn-group" dropdown>
@@ -53,7 +54,7 @@
       </div>
       <div class="build-row col-sm-6">
         <mat-icon>alarm</mat-icon>
-        <span *ngIf="buildDetails.finished_at === undefined || buildDetails.finished_at === 0">{{elapsed.transform(buildDetails.started_at)}}</span>
+        <span *ngIf="buildDetails.finished_at === undefined || buildDetails.finished_at == 0">{{elapsed.transform(buildDetails.started_at)}}</span>
         <span *ngIf="buildDetails.finished_at > 0">{{buildDetails.started_at | durationTime:buildDetails.finished_at}}</span>
       </div>
       <div class="build-row col-sm-6">
@@ -68,30 +69,32 @@
     </div>
     <hr>
 
-    <div *ngFor="let proc of buildDetails.procs" class="list-group">
-      <a *ngFor="let child of proc.children" (click)="openLog(child.pid)" href="javascript:void(0)" class="list-group-item" 
-      [ngClass]="{
+    <div ng-sticky [offSet]="70" [addClass]="'sticky'">
+      <div *ngFor="let proc of buildDetails.procs" class="list-group">
+        <a *ngFor="let child of proc.children" (click)="openLog(child)" href="javascript:void(0)" class="list-group-item" [ngClass]="{
                   'list-group-item-success': child.state === 'success', 
                   'list-group-item-warning': child.state === 'running',
-                  'list-group-item-danger': child.state === 'failure' || child.state === 'killed'}">
-        {{child.name}}
-        <span class="to-right" *ngIf="child.state === 'failure' || child.state === 'killed'">
-          <i class="fa fa-times-circle-o text-danger"></i>
-        </span>
-        <span class="to-right" *ngIf="child.state === 'success'">
-          <i class="fa fa-check-circle text-success" aria-hidden="true"></i>
-        </span>
-        <span class="to-right" *ngIf="child.state === 'running'">
-          <i class="fa fa-spinner fa-spin text-warning" aria-hidden="true"></i>
-        </span>
-        <span class="to-right" *ngIf="child.state === 'skipped'">
-          <i class="fa fa-minus-circle" aria-hidden="true"></i>
-        </span>
-        <span class="to-right text-muted timer">
-          <span *ngIf="child.end_time">{{child.start_time | durationTime:child.end_time}}</span>
-          <span *ngIf="child.end_time === undefined">{{elapsed.transform(child.start_time)}}</span>
-        </span>
-      </a>
+                  'list-group-item-danger': child.state === 'failure' || child.state === 'killed',
+                  'active': routerParams.pid == child.pid}">
+          {{child.name}}
+          <span class="to-right" *ngIf="child.state === 'failure' || child.state === 'killed'">
+            <i class="fa fa-times-circle-o"></i>
+          </span>
+          <span class="to-right" *ngIf="child.state === 'success'">
+            <i class="fa fa-check-circle" aria-hidden="true"></i>
+          </span>
+          <span class="to-right" *ngIf="child.state === 'running'">
+            <i class="fa fa-spinner fa-spin" aria-hidden="true"></i>
+          </span>
+          <span class="to-right" *ngIf="child.state === 'skipped'">
+            <i class="fa fa-minus-circle" aria-hidden="true"></i>
+          </span>
+          <span class="to-right timer">
+            <span *ngIf="child.end_time">{{child.start_time | durationTime:child.end_time}}</span>
+            <span *ngIf="child.end_time === undefined">{{elapsed.transform(child.start_time)}}</span>
+          </span>
+        </a>
+      </div>
     </div>
   </div>
 
@@ -99,19 +102,39 @@
     <div class="well well-sm" *ngIf="isCanceled">
       <div class="text-danger">{{buildDetails.procs[0].error}}</div>
     </div>
-    <div class="well">
-      <mat-icon title="copy" style="cursor: pointer" *ngIf="logs.length > 0" class="to-right" ngxClipboard [cbContent]="logMessage">content_copy</mat-icon>
+    <div *ngIf="isLoadingLogs.value">
+      <i class="fa fa-spinner fa-2x fa-spin"></i>
+    </div>
+    <div class="well" *ngIf="!isLoadingLogs.value">
+      <mat-icon (click)="copyToClipboard()" title="copy" style="cursor: pointer" *ngIf="logs.length > 0" class="to-right" ngxClipboard [cbContent]="logMessage">content_copy</mat-icon>
       <div *ngFor="let log of logs; let i = index">
         <div class="row">
           <div class="col-sm-12 col-xs-12">
             <span *ngIf="i < logs.length" class="col-sm-1 col-xs-1 text-muted">{{i+1}}</span>
-            <span class="col-sm-10 col-xs-9">{{log.out}}</span>
-            <span class="col-sm-1 col-xs-2 text-muted" *ngIf="log.time && i < logs.length">{{log.time}}s</span>
-            <span class="col-sm-1 col-xs-2 text-muted" *ngIf="!log.time && i < logs.length">0s</span>
+            <span class="col-sm-10 col-xs-9 log-out">{{log.out}}</span>
+            <span class="col-sm-1 col-xs-2 text-muted" *ngIf="log.time">{{log.time}}s</span>
+            <span class="col-sm-1 col-xs-2 text-muted" *ngIf="!log.time">0s</span>
           </div>
         </div>
       </div>
       <div class="text-danger" *ngIf="buildDetails.error">{{buildDetails.error}}</div>
+      <div id="down"></div>
+    </div>
+  </div>
+  <div class="log-scrolling">
+    <div class="btn-group">
+      <button *ngIf="buildDetails.status === 'running' && !isPlayingLogs" (click)="playLogs()" class="btn btn-info btn-xs">
+        <mat-icon>play_arrow</mat-icon>
+      </button>
+      <button *ngIf="buildDetails.status === 'running' && isPlayingLogs" (click)="stopLogs()" class="btn btn-info btn-xs">
+          <mat-icon>stop</mat-icon>
+        </button>
+      <button pageScroll href="#up" class="btn btn-info btn-xs">
+        <mat-icon>keyboard_arrow_up</mat-icon>
+      </button>
+      <button pageScroll href="#down" class="btn btn-info btn-xs">
+        <mat-icon>keyboard_arrow_down</mat-icon>
+      </button>
     </div>
   </div>
 </div>

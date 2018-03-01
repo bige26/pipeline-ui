@@ -1,0 +1,59 @@
+<div class="row">
+  <div class="col-sm-6 col-md-3">
+    <div class="tp-box" [@flipState]="flipSpark">
+      <div class="tp-box__front">
+        <div class="thumbnail">
+          <mat-icon style="float: right; cursor: pointer" (click)="toggleFlipSpark()">reorder</mat-icon>
+          <img class="img-responsive" src="assets/images/spark.png">
+          <div class="caption">
+            <h3>Spark</h3>
+            <p>
+              Spark is a fast and general cluster computing system for Big Data. It provides high-level APIs in Scala, Java, Python, and
+              R, and an optimized engine that supports general computation graphs for data analysis. It also supports a rich
+              set of higher-level tools including Spark SQL for SQL and DataFrames, MLlib for machine learning, GraphX for
+              graph processing, and Spark Streaming for stream processing.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="tp-box__side tp-box__back">
+        <div class="thumbnail">
+          <mat-icon style="float: right; cursor: pointer" (click)="toggleFlipSpark()">reorder</mat-icon>
+          <div class="caption">
+            <h3>Spark</h3>
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-3">
+    <div class="tp-box" [@flipState]="flipZeppelin">
+      <div class="tp-box__front">
+        <div class="thumbnail">
+          <mat-icon style="float: right; cursor: pointer" (click)="toggleFlipZeppelin()">reorder</mat-icon>
+          <img class="img-responsive" src="assets/images/zeppelin.svg">
+          <div class="caption">
+            <h3>Zeppelin</h3>
+            <p>
+              The Apache Zeppelin spotguide picks up a change in a Spark notebook and deploys and executes it on Kubernetes/cloud in cluster
+              mode. This is built on top of the Spark spotguide - the Spark Driver runs inside the Kubernetes cluster. Zeppelin
+              uses spark-submit to start RemoteInterpreterServer which is able to execute notebooks on Spark.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="tp-box__side tp-box__back">
+        <div class="thumbnail">
+          <mat-icon style="float: right; cursor: pointer" (click)="toggleFlipZeppelin()">reorder</mat-icon>
+          <div class="caption">
+            <h3>Zeppelin</h3>
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

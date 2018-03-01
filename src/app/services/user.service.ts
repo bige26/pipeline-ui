@@ -9,7 +9,7 @@ import {Observable} from 'rxjs';
 export class UserService {
 
   public basePath = '/api/user';
-  private timer = Observable.timer(0, 100000);
+  private timer = Observable.timer(0, 1500);
 
   constructor(private baseService: BaseService) {
   }

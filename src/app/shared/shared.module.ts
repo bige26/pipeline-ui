@@ -6,7 +6,7 @@ import {MatIconModule} from '@angular/material';
 import {ElabsedTimePipe} from './pipes/elabsed-time.pipe';
 import {MaskPipe} from './pipes/mask.pipe';
 import {AlertModule} from 'ngx-alerts';
-import {AccordionModule} from 'ngx-bootstrap';
+import {AccordionModule, ModalModule} from 'ngx-bootstrap';
 import {AuthService} from '../services/auth.service';
 import {BaseService} from '../services/base.service';
 import {AuthGuard} from '../services/auth.guard';
@@ -35,7 +35,8 @@ import {FilterPipe} from "./pipes/filter.pipe";
     FilterPipe,
     MaskPipe,
     ElabsedTimePipe,
-    DurationTimePipe
+    DurationTimePipe,
+    ModalModule
   ]
 })
 export class SharedModule {

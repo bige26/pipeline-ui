@@ -1,7 +1,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-3">
-      <app-feed></app-feed>
+      <app-feed ng-sticky [offSet]="70" [addClass]="'sticky'"></app-feed>
     </div>
     <div class="col-md-9">
       <router-outlet></router-outlet>

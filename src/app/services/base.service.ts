@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
 import {AuthService} from './auth.service';
+import {environment} from '../../environments/environment';
 
 @Injectable()
 export class BaseService {
@@ -13,7 +14,7 @@ export class BaseService {
 
     const builtUrl = this.buildUrl(path, param, queryParams);
 
-    return this.http.get<T>(path,)
+    return this.http.get<T>(builtUrl)
       .toPromise()
       .catch(this.handleGlobalError);
 
@@ -56,8 +57,13 @@ export class BaseService {
 
   private buildUrl(path: string, param: string | number, queryParams: Object): string {
     param = param ? '/' + param : '';
-    console.log(`${path}${param}${this.buildQueryParams(queryParams)}`);
-    return `${path}${param}${this.buildQueryParams(queryParams)}`;
+    let baseUrl = '';
+    if (path.match('/clusters')) {
+      baseUrl = environment.clusterBaseUrl;
+    } else {
+      baseUrl = environment.droneBaseUrl;
+    }
+    return `${baseUrl}${path}${param}${this.buildQueryParams(queryParams)}`;
   }
 
   private buildQueryParams(queryParams: Object) {

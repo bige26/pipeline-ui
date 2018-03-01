@@ -11,13 +11,18 @@ import {DroneRoutingModule} from './drone-routing.module';
 import { BsDropdownModule } from 'ngx-bootstrap';
 import { ElabsedTimePipe } from '../../shared/pipes/elabsed-time.pipe';
 import { ClipboardModule } from 'ngx-clipboard';
+import { NgStickyDirective } from 'ng-sticky';
+import { NgStickyModule } from 'ng-sticky';
+import {Ng2PageScrollModule} from 'ng2-page-scroll';
 
 @NgModule({
   imports: [
     SharedModule,
     DroneRoutingModule,
     BsDropdownModule.forRoot(),
-    ClipboardModule
+    ClipboardModule,
+    Ng2PageScrollModule,
+    NgStickyModule
   ],
   declarations: [
     FeedComponent,

@@ -1,39 +1,37 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {ClusterRepresentation} from "../../../models/cluster.model";
+import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
+import {ClusterEndpoint, ClusterRepresentation} from "../../../models/cluster.model";
 import {ClusterService} from "../../../services/cluster.service";
-import {AlertService} from "ngx-alerts";
-import {saveAs} from 'file-saver';
+import {Subscription} from "rxjs/Subscription";
 
 @Component({
   selector: 'app-cluster-detail',
   templateUrl: './cluster-detail.component.html',
   styleUrls: ['./cluster-detail.component.scss']
 })
-export class ClusterDetailComponent implements OnInit {
+export class ClusterDetailComponent implements OnInit, OnDestroy {
 
   @Input() cluster: ClusterRepresentation;
+  @Input() visibleChange: EventEmitter<boolean>;
 
-  private CLUSTER_CONFIG_FILE_NAME = 'config.yaml';
+  public endpoints: ClusterEndpoint[] = [];
 
-  constructor(private clusterService: ClusterService,
-              private alertService: AlertService) {
+  private visibleChangeSub: Subscription;
+
+  constructor(private clusterService: ClusterService) {
   }
 
   ngOnInit() {
-  }
-
-  removeCluster(id: number) {
-    //TODO add id
-    this.clusterService.deleteCluster(200).then(value => {
-      this.alertService.success(value.message);
+    this.visibleChange.subscribe(visible => {
+      if (visible) {
+        this.clusterService.getPublicEndpoints(this.cluster.id).then(value => this.endpoints = value.endpoints);
+      }
     });
   }
 
-  downloadConfig(id: number) {
-    this.clusterService.fetchClusterConfig(id).then(value => {
-      const blob = new Blob([atob(value.data)], {type: 'application/yaml'});
-      saveAs(blob, this.CLUSTER_CONFIG_FILE_NAME)
-    })
+  ngOnDestroy() {
+    if (this.visibleChangeSub) {
+      this.visibleChangeSub.unsubscribe();
+    }
   }
 
 }

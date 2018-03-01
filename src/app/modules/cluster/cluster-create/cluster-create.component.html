@@ -18,13 +18,10 @@
 </div>
 
 <div class="panel" *ngIf="getCurrentStep() == 1">
-  <div class="panel-heading text-center">
-    <h2>Choose provider</h2>
-  </div>
   <div class="panel-body">
     <div class="row text-center">
       <div class="col-md-6" *ngFor="let provider of providers">
-        <div class="provider-card" (click)="selectCluster(provider.id)">
+        <div class="secret-card" (click)="selectCloudType(provider.id)">
           <div class="card height-100">
             <img class="card-img-top" src="{{provider.imgUrl}}">
           </div>
@@ -35,31 +32,151 @@
 </div>
 
 <div class="panel" *ngIf="getCurrentStep() === 2">
-  <div class="panel-heading text-center">
-    <h2>Choose provider config</h2>
-  </div>
-  <div class="row cluster-provider-config">
-    <div class="list-group">
-      <div class="list-group-item provider-select-item" *ngFor="let i of [0,2,3,4]" (click)="nextStep()">
+  <div class="row cluster-secret-config">
+    <div class="panel panel-default">
+      <div class="panel-heading">
         <div class="row">
-          <div class="col-xs-4 col-sm-6">
-            provider {{i}}
+          <div class="col-sm-8">
+            <div class="input-group">
+            <span class="input-group-addon">
+                <span class="glyphicon glyphicon-search"></span>
+            </span>
+              <input type="text" class="form-control" placeholder="Secret name" [(ngModel)]="secretSearchData">
+            </div>
           </div>
-          <div class="col-md-6 text-right">
-            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+          <div class="col-sm-4">
+            <div class="secret-create-button text-right">
+              <button type="button" class="btn btn-success">
+                Create secret
+              </button>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="list-group">
+      <div class="list-group-item secret-select-item"
+           *ngFor="let i of [{name: '1'}, {name: '2'},{name: '3'}] | searchFilter: secretSearchData:'name' | paginate: { itemsPerPage: clusterPageCount, currentPage: page, id: 'secretsPaginator'}"
+           (click)="nextStep()">
+        <div class="row">
+          <div class="col-xs-4 col-sm-6">
+            {{i.name}}
+          </div>
+          <div class="col-md-6 text-right">
+            <button type="button" class="btn btn-danger btn-xs" (click)="removeSecret($event)">
+              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="text-center pull-right">
+      <pagination-controls id="secretsPaginator" (pageChange)="page = $event" autoHide="true"
+                           previousLabel="" nextLabel=""></pagination-controls>
+    </div>
   </div>
 </div>
 
-<div class="panel panel-width" *ngIf="getCurrentStep() === 3">
-  <div class="panel-heading text-center">
-    <h2>Configure provider</h2>
-  </div>
+<div class="panel panel-width cluster-create-form-panel" *ngIf="getCurrentStep() === 3">
   <div class="panel-body">
-    <form [formGroup]="configForm">
+    <form>
+      <div [formGroup]="createClusterForm">
+        <div class="form-group form-inline">
+          <label for="name" class="form-inline">Name</label>
+          <input id="name" class="form-control" formControlName="name">
+        </div>
+        <div class="form-group form-inline">
+          <label for="location" class="form-inline">Location</label>
+          <input id="location" class="form-control" formControlName="location">
+        </div>
+        <div class="form-group form-inline">
+          <label for="cloud" class="form-inline">Cloud</label>
+          <input id="cloud" class="form-control" formControlName="cloud" disabled="true">
+        </div>
+        <div class="form-group form-inline">
+          <label for="nodeInstanceType" class="form-inline">Node instance type</label>
+          <input id="nodeInstanceType" class="form-control" formControlName="nodeInstanceType">
+        </div>
+      </div>
+
+      <hr style="width: 200px;">
+
+      <div *ngIf="selectedCloudType === 'amazon'" [formGroup]="amazonCreateForm">
+        <div class="form-group form-inline">
+          <label for="spotPrice" class="form-inline">Spot price</label>
+          <input id="spotPrice" class="form-control" formControlName="spotPrice">
+        </div>
+        <div class="form-group form-inline">
+          <label for="maxCount" class="form-inline">Max count</label>
+          <input type="number" id="maxCount" class="form-control" formControlName="maxCount">
+        </div>
+        <div class="form-group form-inline">
+          <label for="minCount" class="form-inline">Min count</label>
+          <input type="number" id="minCount" class="form-control" formControlName="minCount">
+        </div>
+        <div class="form-group form-inline">
+          <label for="amazonNodeImage" class="form-inline">Node image</label>
+          <input id="amazonNodeImage" class="form-control" formControlName="amazonNodeImage">
+        </div>
+
+        <hr style="width: 200px;">
+
+        <div class="form-group form-inline">
+          <label for="amazonNodeInstanceType" class="form-inline">Master instance type</label>
+          <input id="amazonNodeInstanceType" class="form-control" formControlName="amazonNodeInstanceType">
+        </div>
+        <div class="form-group form-inline">
+          <label for="amazonMasterImage" class="form-inline">Master image</label>
+          <input id="amazonMasterImage" class="form-control" formControlName="amazonMasterImage">
+        </div>
+      </div>
+
+      <div *ngIf="selectedCloudType === 'azure'" [formGroup]="azureCreateForm">
+        <div class="form-group form-inline">
+          <label for="resourceGroup" class="form-inline">Resource group</label>
+          <input id="resourceGroup" class="form-control" formControlName="resourceGroup">
+        </div>
+        <div class="form-group form-inline">
+          <label for="agentCount" class="form-inline">Agent count</label>
+          <input type="number" id="agentCount" class="form-control" formControlName="agentCount">
+        </div>
+        <div class="form-group form-inline">
+          <label for="agentName" class="form-inline">Agent name</label>
+          <input id="agentName" class="form-control" formControlName="agentName">
+        </div>
+        <div class="form-group form-inline">
+          <label for="kubernetesVersion" class="form-inline">Kubernetes version</label>
+          <input id="kubernetesVersion" class="form-control" formControlName="kubernetesVersion">
+        </div>
+      </div>
+
+      <div *ngIf="selectedCloudType === 'google'" [formGroup]="googleCreateForm">
+        <div class="form-group form-inline">
+          <label for="googleProject" class="form-inline">Project</label>
+          <input id="googleProject" class="form-control" formControlName="project">
+        </div>
+        <div class="form-group form-inline">
+          <label for="googleNodeVersion" class="form-inline">Node version</label>
+          <input id="googleNodeVersion" class="form-control" formControlName="nodeVersion">
+        </div>
+        <div class="form-group form-inline">
+          <label for="googleNodeCount" class="form-inline">Count</label>
+          <input type="number" id="googleNodeCount" class="form-control" formControlName="count">
+        </div>
+
+        <hr style="width: 200px;">
+
+        <div class="form-group form-inline">
+          <label for="googleMasterVersion" class="form-inline">Master version</label>
+          <input id="googleMasterVersion" class="form-control" formControlName="masterVersion">
+        </div>
+      </div>
+
+      <div class="btn-group">
+        <button type="submit" class="btn btn-success" (click)="createCluster()" [disabled]="isInvalidForm()">
+          Create
+        </button>
+      </div>
     </form>
   </div>
 </div>

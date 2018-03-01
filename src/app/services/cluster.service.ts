@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from './base.service';
 import {
+  ClusterEndpointsResponse,
   ClusterRepresentationResponse,
   ClusterStatusResponse,
   ClusterSuccessResponse,
@@ -53,9 +54,8 @@ export class ClusterService {
     return this.baseService.get<FetchClusterConfigResponse>(this.basePath + '/' + id + '/config');
   }
 
-  // TODO: response type missing
-  public getPublicEndpoints(id: number): Promise<any> {
-    return this.baseService.get(this.basePath + '/' + id + '/endpoints');
+  public getPublicEndpoints(id: number): Promise<ClusterEndpointsResponse> {
+    return this.baseService.get<ClusterEndpointsResponse>(this.basePath + '/' + id + '/endpoints');
   }
 
   public initHelmCluster(id: number, bansaiHelmInstall: BansaiHelmInstall): Promise<BansaiHelmInstall> {

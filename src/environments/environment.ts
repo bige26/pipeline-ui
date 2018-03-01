@@ -4,5 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  clusterBaseUrl: 'http://54.154.150.169/pipeline/api/v1',
+  droneBaseUrl: 'http://54.154.150.169',
+  baseUrl: ''
 };

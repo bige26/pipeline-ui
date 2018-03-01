@@ -15,11 +15,8 @@ export class BaseInterceptor implements HttpInterceptor {
   private getHeaders(req: HttpRequest<any>) {
     let headers: HttpHeaders = new HttpHeaders().append('Content-Type', 'application/json');
 
-    if (req.url.match('/clusters')) {
-      headers = headers.append('Authorization', 'Basic YWRtaW46UGFzczEyMzQ=');
-    } else {
-      headers = Object.assign(headers, headers.set('Authorization', this.authService.getBearerToken()));
-    }
+    headers = Object.assign(headers, headers.set('Authorization', this.authService.getBearerToken()));
+    
 
     return {
       headers: headers

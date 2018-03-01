@@ -1,24 +1,24 @@
 {
   "/clusters": {
-    "target": "http://52.232.37.14/pipeline/api/v1",
+    "target": "http://54.154.150.169/pipeline/api/v1/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   },
   "/api/user": {
-    "target": "http://localhost:8000",
+    "target": "http://54.154.150.169/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   },
   "/stream/logs": {
-    "target": "http://localhost:8000",
+    "target": "http://54.154.150.169/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true
   },
   "/api/repos": {
-    "target": "http://localhost:8000",
+    "target": "http://54.154.150.169/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

@@ -1,0 +1,14 @@
+<div class="modal-header text-center">
+  <h4 class="modal-title pull-left">Are you absolutely sure?</h4>
+</div>
+<div class="modal-body delete-modal-body">
+  <h4>
+    Please type in the name of the cluster to confirm.
+  </h4>
+  <input class="form-control" [placeholder]="clusterName" [(ngModel)]="clusterConfirmName">
+</div>
+<div class="modal-footer">
+  <button type="button" class="btn btn-default" (click)="close()">Cancel</button>
+  <button type="button" class="btn btn-danger" [disabled]="clusterName !== clusterConfirmName" (click)="delete()">Delete
+  </button>
+</div>

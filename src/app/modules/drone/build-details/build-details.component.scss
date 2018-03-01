@@ -18,3 +18,19 @@
     font-size: 13px;
     margin-top: 1px;
 }
+
+.log-out {
+    word-wrap: break-word;    
+}
+
+.sticky {
+    width: 28.5%;
+}
+
+.log-scrolling {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    display: flex;
+    flex-direction: row;
+}

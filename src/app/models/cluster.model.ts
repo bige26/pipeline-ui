@@ -1,16 +1,26 @@
+export enum CLOUD_TYPE {
+  AMAZON = 'amazon',
+  AZURE = 'azure',
+  GOOGLE = 'google'
+}
+
 export interface ClusterProvider {
-  id: string;
+  id: CLOUD_TYPE;
   imgUrl: string;
 }
 
-export const DEFALT_CLUSTER_PROVIDERS: Array<ClusterProvider> = [
+export const CLUSTER_CLOUD_TYPES: Array<ClusterProvider> = [
   {
-    id: 'AZURE',
+    id: CLOUD_TYPE.AZURE,
     imgUrl: '../../assets/images/azure.png'
   },
   {
-    id: 'AWS',
+    id: CLOUD_TYPE.AMAZON,
     imgUrl: '../../assets/images/aws.png'
+  },
+  {
+    id: CLOUD_TYPE.GOOGLE,
+    imgUrl: '../../assets/images/google.png'
   }
 ];
 
@@ -22,13 +32,34 @@ export interface CreateClusterRequest {
   properties: CreateClusterProperties;
 }
 
+export interface CreateClusterGoogleProperties {
+  project: string;
+  node: GoogleNode;
+  master: GoogleMaster;
+}
+
+export interface GoogleMaster {
+  version: string;
+}
+
+export interface GoogleNode {
+  count: number;
+  version: string;
+}
+
 export interface CreateClusterProperties {
+  amazon: CreateClusterAmazonProperties;
+  azure: CreateClusterAzureProperties;
+  google: CreateClusterGoogleProperties;
+}
+
+export interface CreateClusterAmazonProperties {
   node: CreateAmazonNode;
   master: CreateAmazonMaster;
 }
 
 export interface CreateAmazonNode {
-  spotPrice: number;
+  spotPrice: string;
   minCount: number;
   maxCount: number;
   image: string;
@@ -42,7 +73,7 @@ export interface CreateAmazonMaster {
 export interface CreateAzureNode {
   resourceGroup: string;
   agentCount: number;
-  agentName: number;
+  agentName: string;
   kubernetesVersion: string;
 }
 
@@ -306,4 +337,14 @@ export interface FetchClusterConfigResponse {
 export interface ClusterRepresentationResponse {
   data: ClusterRepresentation[];
   status: number;
+}
+
+export interface ClusterEndpoint {
+  name: string;
+  host: string;
+  urls: string;
+}
+
+export interface ClusterEndpointsResponse {
+  endpoints: Array<ClusterEndpoint>;
 }

@@ -1,9 +1,8 @@
-.provider-card:hover {
-  box-shadow: 0 1px 6px #00d8ff;
-  cursor: pointer;
-}
-
-.provider-card {
+.secret-card {
+  &:hover {
+    box-shadow: 0 1px 6px #00d8ff;
+    cursor: pointer;
+  }
   border-radius: 2px;
   box-shadow: 0 1px 6px #777;
   margin: 15px;
@@ -14,21 +13,23 @@
   }
 }
 
-.cluster-provider-config {
-  width: 60%;
-  margin: auto;
+.cluster-secret-config {
+  width: 66%;
+  margin-top: 30px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.glyphicon-remove {
-  color: #ff330a;
-}
-
-.provider-select-item {
+.secret-select-item {
+  &:hover {
+    background-color: #E3E3E3;
+    cursor: pointer;
+  }
   margin: 5px;
 }
 
-.provider-select-item:hover {
-  background-color: lightgray;
+.secret-create-button {
+  padding-right: 5px;
 }
 
 .step-row {
@@ -54,5 +55,14 @@
   }
   .step-label {
     margin-top: 5px;
+  }
+}
+
+.cluster-create-form-panel {
+  margin-top: 30px;
+  text-align: center;
+  label {
+    width: 180px;
+    text-align: left;
   }
 }
