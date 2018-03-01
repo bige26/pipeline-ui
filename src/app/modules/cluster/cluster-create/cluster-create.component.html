@@ -46,7 +46,7 @@
           </div>
           <div class="col-sm-4">
             <div class="secret-create-button text-right">
-              <button type="button" class="btn btn-success">
+              <button type="button" class="btn btn-success" (click)="createSecret()">
                 Create secret
               </button>
             </div>
@@ -56,11 +56,11 @@
     </div>
     <div class="list-group">
       <div class="list-group-item secret-select-item"
-           *ngFor="let i of [{name: '1'}, {name: '2'},{name: '3'}] | searchFilter: secretSearchData:'name' | paginate: { itemsPerPage: clusterPageCount, currentPage: page, id: 'secretsPaginator'}"
+           *ngFor="let secret of secrets | searchFilter: secretSearchData:'name' | paginate: { itemsPerPage: clusterPageCount, currentPage: page, id: 'secretsPaginator'}"
            (click)="nextStep()">
         <div class="row">
           <div class="col-xs-4 col-sm-6">
-            {{i.name}}
+            {{secret.name}}
           </div>
           <div class="col-md-6 text-right">
             <button type="button" class="btn btn-danger btn-xs" (click)="removeSecret($event)">

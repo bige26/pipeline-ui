@@ -15,7 +15,8 @@ import {DurationTimePipe} from './pipes/duration-time.pipe';
 import {ClusterService} from '../services/cluster.service';
 import {DeploymentService} from '../services/deployment.service';
 import {StatusService} from '../services/status.service';
-import {FilterPipe} from "./pipes/filter.pipe";
+import {FilterPipe} from './pipes/filter.pipe';
+import {SecretService} from '../services/secret.service';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,8 @@ export class SharedModule {
         UserService,
         ClusterService,
         DeploymentService,
-        StatusService
+        StatusService,
+        SecretService
       ]
     };
   }

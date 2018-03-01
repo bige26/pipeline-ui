@@ -7,9 +7,13 @@ import {
   CreateClusterProperties,
   CreateClusterRequest
 } from '../../../models/cluster.model';
-import {FormBuilder, FormGroup, Validators} from "@angular/forms";
-import {ClusterService} from "../../../services/cluster.service";
-import {AlertService} from "ngx-alerts";
+import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {ClusterService} from '../../../services/cluster.service';
+import {AlertService} from 'ngx-alerts';
+import {Secret, SECRET_CLOUD_TYPE, SECRET_TYPES} from '../../../models/secret.model';
+import {BsModalService} from 'ngx-bootstrap';
+import {SecretCreateComponent} from '../secret-create/secret-create.component';
+import {SecretService} from '../../../services/secret.service';
 
 @Component({
   selector: 'app-create-cluster',
@@ -23,6 +27,17 @@ export class ClusterCreateComponent implements OnInit {
   public amazonCreateForm: FormGroup;
   public googleCreateForm: FormGroup;
 
+  public secrets: Array<Secret> = [{
+    id: 'amazon',
+    name: 'amazon',
+    type: SECRET_TYPES.AMAZON,
+    values: []
+  }, {
+    id: 'azure',
+    name: 'azure',
+    type: SECRET_TYPES.AZURE,
+    values: []
+  }];
   public providers: Array<ClusterProvider> = [];
   public step = 1;
   public page = 1;
@@ -49,6 +64,8 @@ export class ClusterCreateComponent implements OnInit {
   constructor(private alertService: AlertService,
               private clusterService: ClusterService,
               private formBuilder: FormBuilder,
+              private modalService: BsModalService,
+              private secretService: SecretService,
               private router: Router) {
   }
 
@@ -60,8 +77,14 @@ export class ClusterCreateComponent implements OnInit {
 
   createCluster() {
     this.clusterService.createCluster(this.getCreateClusterRq()).then(value => {
-      this.router.navigate(['cluster/list'])
+      this.router.navigate(['cluster/list']);
     }).catch(reason => this.alertService.danger('Could not launch cluster!'));
+  }
+
+  createSecret() {
+    const deleteDialog = this.modalService.show(SecretCreateComponent);
+    const dialogContent = (<SecretCreateComponent>deleteDialog.content);
+    dialogContent.secretType = this.selectedCloudType;
   }
 
   removeSecret(event, id?: number) {
@@ -71,6 +94,7 @@ export class ClusterCreateComponent implements OnInit {
   selectCloudType(type: string) {
     this.selectedCloudType = type;
     this.createClusterForm.get('cloud').setValue(type);
+    this.initSecrets();
     this.nextStep();
   }
 
@@ -102,6 +126,12 @@ export class ClusterCreateComponent implements OnInit {
       this.azureCreateForm.invalid && this.googleCreateForm.invalid);
   }
 
+  private initSecrets() {
+    this.secretService.getSecrets().then(value => {
+    });
+    this.secrets = this.secrets.filter(_ => _.type === SECRET_CLOUD_TYPE.get(this.selectedCloudType));
+  }
+
   private initClusterCreateForm() {
     this.createClusterForm = this.formBuilder.group({
       name: ['', Validators.required],
@@ -129,7 +159,7 @@ export class ClusterCreateComponent implements OnInit {
       masterVersion: [''],
       nodeVersion: [''],
       count: ['']
-    })
+    });
   }
 
   private resetCreateClusterForm() {
@@ -143,21 +173,26 @@ export class ClusterCreateComponent implements OnInit {
 
   private getCreateClusterRq(): CreateClusterRequest {
     let rqProperties: CreateClusterProperties;
-    if (this.selectedCloudType === CLOUD_TYPE.AZURE) {
-      rqProperties = this.getAzureCreateRqProperties();
-    } else if (this.selectedCloudType === CLOUD_TYPE.AMAZON) {
-      rqProperties = this.getAmazonCreateRqProperties();
-    } else if (this.selectedCloudType === CLOUD_TYPE.GOOGLE) {
-      rqProperties = this.getGoogleCreateRqProperties();
+    switch (this.selectedCloudType) {
+      case CLOUD_TYPE.AZURE: {
+        rqProperties = this.getAzureCreateRqProperties();
+        break;
+      }
+      case CLOUD_TYPE.AMAZON: {
+        rqProperties = this.getAmazonCreateRqProperties();
+        break;
+      }
+      case CLOUD_TYPE.GOOGLE: {
+        rqProperties = this.getGoogleCreateRqProperties();
+      }
     }
-
     return {
       name: this.createClusterForm.get('name').value,
       cloud: this.createClusterForm.get('cloud').value,
       location: this.createClusterForm.get('location').value,
       nodeInstanceType: this.createClusterForm.get('nodeInstanceType').value,
       properties: rqProperties
-    }
+    };
   }
 
   private getGoogleCreateRqProperties(): CreateClusterProperties {
@@ -174,7 +209,7 @@ export class ClusterCreateComponent implements OnInit {
       },
       amazon: null,
       azure: null
-    }
+    };
   }
 
   private getAmazonCreateRqProperties(): CreateClusterProperties {
@@ -193,7 +228,7 @@ export class ClusterCreateComponent implements OnInit {
       },
       azure: null,
       google: null
-    }
+    };
   }
 
   private getAzureCreateRqProperties(): CreateClusterProperties {
@@ -208,7 +243,7 @@ export class ClusterCreateComponent implements OnInit {
       },
       amazon: null,
       google: null
-    }
+    };
   }
 
 }
