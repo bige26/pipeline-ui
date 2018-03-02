@@ -14,7 +14,7 @@ import {
   animations: [
     trigger('flipState', [
       state('active', style({
-        transform: 'rotateY(179.9deg)'
+        transform: 'rotateY(180deg)'
       })),
       state('inactive', style({
         transform: 'rotateY(0)'
@@ -28,6 +28,7 @@ export class DashboardComponent implements OnInit {
 
   public flipSpark: string = 'inactive';  
   public flipZeppelin: string = 'inactive';  
+  public flipKafka: string = 'inactive';  
   
   constructor() { }
 
@@ -40,6 +41,10 @@ export class DashboardComponent implements OnInit {
 
   toggleFlipZeppelin() {
     this.flipZeppelin = (this.flipZeppelin === 'inactive') ? 'active' : 'inactive';
+  }
+
+  toggleFlipKafka() {
+    this.flipKafka = (this.flipKafka === 'inactive') ? 'active' : 'inactive';
   }
 
 }

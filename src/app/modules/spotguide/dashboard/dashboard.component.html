@@ -1,5 +1,5 @@
 <div class="row">
-  <div class="col-sm-6 col-md-3">
+  <div class="col-sm-6 col-md-4">
     <div class="tp-box" [@flipState]="flipSpark">
       <div class="tp-box__front">
         <div class="thumbnail">
@@ -8,10 +8,8 @@
           <div class="caption">
             <h3>Spark</h3>
             <p>
-              Spark is a fast and general cluster computing system for Big Data. It provides high-level APIs in Scala, Java, Python, and
-              R, and an optimized engine that supports general computation graphs for data analysis. It also supports a rich
-              set of higher-level tools including Spark SQL for SQL and DataFrames, MLlib for machine learning, GraphX for
-              graph processing, and Spark Streaming for stream processing.
+              One of the default spotguides describes an Apache Spark deployment. For further information about the Apache Spark spotguide
+              please follow this guide. A typical example of a Spark flow is this.
             </p>
           </div>
         </div>
@@ -28,7 +26,7 @@
       </div>
     </div>
   </div>
-  <div class="col-sm-6 col-md-3">
+  <div class="col-sm-6 col-md-4">
     <div class="tp-box" [@flipState]="flipZeppelin">
       <div class="tp-box__front">
         <div class="thumbnail">
@@ -49,6 +47,34 @@
           <mat-icon style="float: right; cursor: pointer" (click)="toggleFlipZeppelin()">reorder</mat-icon>
           <div class="caption">
             <h3>Zeppelin</h3>
+            <p>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-6 col-md-4">
+    <div class="tp-box" [@flipState]="flipKafka">
+      <div class="tp-box__front">
+        <div class="thumbnail">
+          <mat-icon style="float: right; cursor: pointer" (click)="toggleFlipKafka()">reorder</mat-icon>
+          <img class="img-responsive" src="assets/images/kafka.jpg">
+          <div class="caption">
+            <h3>Kafka</h3>
+            <p>
+              The Apache Kafka spotguide has a good understanding of consumers and producers but more importantly it monitors, scales,
+              rebalances and auto-heals the Kafka cluster. It autodetects broker failures, reassigns workloads and edits
+              partition reassignment files.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="tp-box__side tp-box__back">
+        <div class="thumbnail">
+          <mat-icon style="float: right; cursor: pointer" (click)="toggleFlipKafka()">reorder</mat-icon>
+          <div class="caption">
+            <h3>Kafka</h3>
             <p>
             </p>
           </div>

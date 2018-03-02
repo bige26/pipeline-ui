@@ -1,8 +1,10 @@
   .tp-box {
     position: relative;
-    height: 400px;
+    height: 320px;
     transform-style: preserve-3d;
     transition: transform 1s;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 10px;    
   }
   .tp-box__side {
     width: 100%;
@@ -10,8 +12,8 @@
     position: absolute;
     backface-visibility: hidden;
     text-align: center;
-    //cursor: pointer;
     user-select: none;
+
   }
 
   .tp-box__front {
@@ -20,10 +22,18 @@
   }
 
   .tp-box__back {
-    transform: rotateY(179.9deg);
-    height: 380px;
+    transform: rotateY(180deg);
   }
 
   .thumbnail>img {
     height: 100px;
+  }
+
+  .thumbnail {
+    border: none;
+  }
+
+  .thumbnail p {
+    height: 120px;
+    overflow: auto;
   }
