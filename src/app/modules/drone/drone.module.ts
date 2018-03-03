@@ -14,6 +14,7 @@ import { ClipboardModule } from 'ngx-clipboard';
 import { NgStickyDirective } from 'ng-sticky';
 import { NgStickyModule } from 'ng-sticky';
 import {Ng2PageScrollModule} from 'ng2-page-scroll';
+import {ModalModule} from 'ngx-modal';
 
 @NgModule({
   imports: [
@@ -22,7 +23,8 @@ import {Ng2PageScrollModule} from 'ng2-page-scroll';
     BsDropdownModule.forRoot(),
     ClipboardModule,
     Ng2PageScrollModule,
-    NgStickyModule
+    NgStickyModule,
+    ModalModule
   ],
   declarations: [
     FeedComponent,

@@ -2,13 +2,13 @@
   <i class="fa fa-spinner fa-2x fa-spin"></i>
 </div>
 <div class="col-sm-12">
-    <ul class="breadcrumb col-sm-10">
-      <li>
-        <a href="javascript:void(0)" (click)="openRepositories()">repositories</a>
-      </li>
-      <li class="active">{{title}}</li>
-    </ul>
-  </div>
+  <ul class="breadcrumb col-sm-10">
+    <li>
+      <a href="javascript:void(0)" (click)="openRepositories()">repositories</a>
+    </li>
+    <li class="active">{{title}}</li>
+  </ul>
+</div>
 <div *ngIf="!isLoading.value" class="col-sm-12">
   <accordion>
     <accordion-group [isOpen]="true" (isOpenChange)="isOpenSettings = !isOpenSettings">
@@ -99,7 +99,7 @@
           <li *ngFor="let secret of secrets" class="list-group-item">
             <label>{{secret.name}}</label>
             <div class="to-right">
-              <button type="submit" class="btn btn-danger btn-sm" (click)="deleteSecret(secret.name)">Delete</button>
+              <button type="submit" class="btn btn-danger btn-sm" (click)="secretModal.open(); deletedSecretName = secret.name">Delete</button>
             </div>
             <div>
               <span *ngFor="let label of secret.event" class="label label-default">{{label}}</span>
@@ -133,7 +133,7 @@
           <li *ngFor="let registry of registries" class="list-group-item">
             <label>{{registry.address}}</label>
             <span class="to-right">
-              <button type="submit" class="btn btn-danger btn-sm" (click)="deleteRegistry(registry.username)">Delete</button>
+              <button type="submit" class="btn btn-danger btn-sm" (click)="registryModal.open(); deletedRegistryName = registry.address">Delete</button>
             </span>
           </li>
           <div class="text-center" *ngIf="registries.length === 0">No credentials!</div>
@@ -159,3 +159,31 @@
   </accordion>
 </div>
 <button type="button" class="btn btn-default" (click)="openRepositories()">Back</button>
+
+<div class="row">
+  <modal #secretModal modalClass="modal-md">
+      <modal-header>
+          <h3 class="text-danger">Delete secret</h3>
+      </modal-header>
+      <modal-content>
+          Do you want to delete '{{deletedSecretName}}' secret?
+      </modal-content>
+      <modal-footer>
+          <button class="btn btn-danger" (click)="deleteSecret(); secretModal.close()">delete</button>
+      </modal-footer>
+  </modal>
+</div>
+
+<div class="row">
+    <modal #registryModal modalClass="modal-md">
+        <modal-header>
+            <h3 class="text-danger">Delete registry</h3>
+        </modal-header>
+        <modal-content>
+            Do you want to delete '{{deletedRegistryName}}' registry?
+        </modal-content>
+        <modal-footer>
+            <button class="btn btn-danger" (click)="deleteRegistry(); registryModal.close()">delete</button>
+        </modal-footer>
+    </modal>
+  </div>

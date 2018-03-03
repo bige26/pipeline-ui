@@ -24,7 +24,9 @@ export class SettingsComponent implements OnInit {
   public secrets: Secret[] = [];
   public registries: Registry[] = [];
   public title: string;
-
+  public deletedSecretName: string;
+  public deletedRegistryName: string;
+  
   public secretsForm: FormGroup = new FormGroup({
     name: new FormControl(''),
     value: new FormControl('')
@@ -74,9 +76,9 @@ export class SettingsComponent implements OnInit {
     this.router.navigate(['drone/repositroy']);
   }
 
-  public deleteSecret(secretName: string) {
+  public deleteSecret() {
 
-    this.repositoryService.deleteSecret(this.repository.owner, this.repository.name, secretName).then(_ => {
+    this.repositoryService.deleteSecret(this.repository.owner, this.repository.name, this.deletedSecretName).then(_ => {
       this.alertService.success('Successfully removed the secret');
       this.repositoryService.getSecrets(this.repository.owner, this.repository.name).then(resp => {
         this.secrets = resp;
@@ -84,9 +86,9 @@ export class SettingsComponent implements OnInit {
     });
   }
 
-  public deleteRegistry(registryName: string) {
+  public deleteRegistry() {
 
-    this.repositoryService.deleteRegistry(this.repository.owner, this.repository.name, registryName).then(_ => {
+    this.repositoryService.deleteRegistry(this.repository.owner, this.repository.name, this.deletedRegistryName).then(_ => {
       this.alertService.success('Successfully deleted the registry credentials');
       this.repositoryService.getRegistries(this.repository.owner, this.repository.name).then(resp => {
         this.registries = resp;
