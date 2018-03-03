@@ -36,21 +36,12 @@ export class ClusterListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.startLoading();
-    this.clusterService.getClusters().then(value => {
-      if (value.data) {
-        this.clusters = value.data;
-      }
-      this.stopLoading();
-    }).catch(reason => {
-      this.stopLoading();
-    });
+    this.updateClusterList();
   }
 
   addCluster() {
     this.router.navigate(['cluster/create']);
   }
-
 
   openDeleteModal(event, selected: ClusterRepresentation, deleteModal: Modal) {
     event.stopPropagation();
@@ -62,6 +53,7 @@ export class ClusterListComponent implements OnInit, OnDestroy {
   deleteCluster() {
     this.clusterService.deleteCluster(this.selectedClusterId).then(value => {
       this.alertService.success(value.message);
+      this.updateClusterList();
     }).catch(reason => this.alertService.danger('Cluster delete error!'));
     this.deletedClusterName = '';
   }
@@ -74,18 +66,30 @@ export class ClusterListComponent implements OnInit, OnDestroy {
     });
   }
 
+
+  ngOnDestroy() {
+    if (this.deleteDialogSub) {
+      this.deleteDialogSub.unsubscribe();
+    }
+  }
+
+  private updateClusterList() {
+    this.startLoading();
+    this.clusterService.getClusters().then(value => {
+      if (value.data) {
+        this.clusters = value.data;
+      }
+      this.stopLoading();
+    }).catch(reason => {
+      this.stopLoading();
+    });
+  }
+
   private startLoading() {
     this.isLoading = true;
   }
 
   private stopLoading() {
     this.isLoading = false;
-  }
-
-
-  ngOnDestroy() {
-    if (this.deleteDialogSub) {
-      this.deleteDialogSub.unsubscribe();
-    }
   }
 }
