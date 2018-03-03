@@ -14,6 +14,7 @@ import {Secret, SECRET_CLOUD_TYPE, SECRET_TYPES} from '../../../models/secret.mo
 import {BsModalService} from 'ngx-bootstrap';
 import {SecretCreateComponent} from '../secret-create/secret-create.component';
 import {SecretService} from '../../../services/secret.service';
+import {SecretDeleteComponent} from '../secret-delete/secret-delete.component';
 
 @Component({
   selector: 'app-create-cluster',
@@ -28,12 +29,12 @@ export class ClusterCreateComponent implements OnInit {
   public googleCreateForm: FormGroup;
 
   public secrets: Array<Secret> = [{
-    id: 'amazon',
+    id: 10,
     name: 'amazon',
     type: SECRET_TYPES.AMAZON,
     values: []
   }, {
-    id: 'azure',
+    id: 12,
     name: 'azure',
     type: SECRET_TYPES.AZURE,
     values: []
@@ -82,13 +83,18 @@ export class ClusterCreateComponent implements OnInit {
   }
 
   createSecret() {
-    const deleteDialog = this.modalService.show(SecretCreateComponent);
-    const dialogContent = (<SecretCreateComponent>deleteDialog.content);
+    const createDialog = this.modalService.show(SecretCreateComponent);
+    const dialogContent = (<SecretCreateComponent>createDialog.content);
     dialogContent.secretType = this.selectedCloudType;
   }
 
-  removeSecret(event, id?: number) {
+  removeSecret(event, id: number) {
     event.stopPropagation();
+    const deleteDialog = this.modalService.show(SecretDeleteComponent);
+    const dialogContent = (<SecretDeleteComponent>deleteDialog.content);
+    dialogContent.secretId = id;
+    // TODO: orgid?!
+    dialogContent.orgId = 1;
   }
 
   selectCloudType(type: string) {

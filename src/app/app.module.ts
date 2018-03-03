@@ -13,13 +13,15 @@ import {BaseInterceptor} from './services/interceptors/base-interceptor';
 import {AuthService} from './services/auth.service';
 import {ClusterDeleteModalComponent} from './modules/cluster/cluster-delete-modal/cluster-delete-modal.component';
 import {SecretCreateComponent} from './modules/cluster/secret-create/secret-create.component';
+import {SecretDeleteComponent} from './modules/cluster/secret-delete/secret-delete.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     ClusterDeleteModalComponent,
-    SecretCreateComponent
+    SecretCreateComponent,
+    SecretDeleteComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +35,8 @@ import {SecretCreateComponent} from './modules/cluster/secret-create/secret-crea
   ],
   entryComponents: [
     ClusterDeleteModalComponent,
-    SecretCreateComponent
+    SecretCreateComponent,
+    SecretDeleteComponent
   ],
   bootstrap: [AppComponent],
   providers: [

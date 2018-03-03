@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {BaseService} from "./base.service";
-import {CreateSecret, SecretResponse} from "../models/secret.model";
+import {BaseService} from './base.service';
+import {CreateSecret, SecretResponse} from '../models/secret.model';
 
 @Injectable()
 export class SecretService {
@@ -21,7 +21,7 @@ export class SecretService {
   }
 
   private createPath(orgId: number) {
-    return `/org/${orgId}/secrets`;
+    return `/pipeline/api/v1/org/${orgId}/secrets`;
   }
 
 

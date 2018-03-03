@@ -1,6 +1,6 @@
 {
   "/clusters": {
-    "target": "http://54.154.150.169/pipeline/api/v1/",
+    "target": "http://54.154.150.169/",
     "secure": false,
     "logLevel": "debug",
     "changeOrigin": true

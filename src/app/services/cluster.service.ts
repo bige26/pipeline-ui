@@ -17,7 +17,7 @@ import {BansaiHelmInstall} from '../models/deployment.model';
 @Injectable()
 export class ClusterService {
 
-  private basePath = '/clusters';
+  private basePath = '/pipeline/api/v1/clusters';
 
   constructor(private baseService: BaseService) {
   }

@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {BsModalRef} from "ngx-bootstrap";
-import {ClusterService} from "../../../services/cluster.service";
-import {AlertService} from "ngx-alerts";
+import {BsModalRef} from 'ngx-bootstrap';
+import {ClusterService} from '../../../services/cluster.service';
+import {AlertService} from 'ngx-alerts';
 
 @Component({
   selector: 'app-cluster-delete-modal',
@@ -30,7 +30,7 @@ export class ClusterDeleteModalComponent implements OnInit {
     this.bsModalRef.hide();
     this.clusterService.deleteCluster(this.clusterId).then(value => {
       this.alertService.success(value.message);
-    });
+    }).catch(reason => this.alertService.danger('Cluster delete error!'));
   }
 
 }

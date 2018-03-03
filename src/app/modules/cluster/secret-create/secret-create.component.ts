@@ -14,9 +14,9 @@ import {AlertService} from 'ngx-alerts';
 export class SecretCreateComponent implements OnInit {
 
   public secretType: CLOUD_TYPE;
-
   public amazonSecretForm: FormGroup;
   public azureSecretForm: FormGroup;
+  public googleSecretForm: FormGroup;
 
   constructor(public bsModalRef: BsModalRef,
               private formBuilder: FormBuilder,
@@ -70,9 +70,21 @@ export class SecretCreateComponent implements OnInit {
     // TODO: refresh secret list
     this.secretService.createSecret(secretRq).then(value => {
       this.alertService.success('Secrets created!');
+      this.bsModalRef.hide();
     }).catch(reason => {
       this.alertService.danger('Secrets create error!');
     });
+  }
+
+  isInvalidForm(): boolean {
+    switch (this.secretType) {
+      case CLOUD_TYPE.AZURE:
+        return this.azureSecretForm.invalid;
+      case CLOUD_TYPE.AMAZON:
+        return this.amazonSecretForm.invalid;
+      case CLOUD_TYPE.GOOGLE:
+        return this.googleSecretForm.invalid;
+    }
   }
 
   private getAmazonSecretValues(): Array<SecretValue> {

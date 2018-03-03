@@ -5,7 +5,7 @@ import {Build} from '../models/build';
 import {BuildDetails, BuildLog} from '../models/build-details';
 import {Secret} from '../models/secret';
 import {Registry} from '../models/registry';
-import {Observable} from 'rxjs';
+import {Observable} from 'rxjs/Observable';
 import {environment} from '../../environments/environment';
 
 @Injectable()
@@ -13,13 +13,11 @@ export class RepositoryService {
 
   private basePath: string = '/api/repos/';
   private buildTimer = Observable.timer(0, 2000);
-  private buildDetailsTimer = Observable.timer(0,5000);
-  private eventSource: any = window['EventSource'];  
-  
-  constructor(
-    private baseService: BaseService,
-    private zone: NgZone
-  ) {
+  private buildDetailsTimer = Observable.timer(0, 5000);
+  private eventSource: any = window['EventSource'];
+
+  constructor(private baseService: BaseService,
+              private zone: NgZone) {
   }
 
   public activate(owner: string, name: string): Promise<Repository> {
@@ -35,7 +33,8 @@ export class RepositoryService {
   }
 
   public getBuildByNumber(owner: string, name: string, buildNumber: number): Observable<BuildDetails> {
-    return this.buildDetailsTimer.flatMap(_ => this.baseService.get<BuildDetails>(this.buildBasePath(owner, name) + '/' + 'builds/' + buildNumber));
+    return this.buildDetailsTimer.flatMap(_ => this.baseService.get<BuildDetails>(
+      this.buildBasePath(owner, name) + '/' + 'builds/' + buildNumber));
   }
 
   public restartBuild(owner: string, name: string, buildNumber: number): Promise<BuildDetails> {
@@ -52,12 +51,12 @@ export class RepositoryService {
 
   public getBuildStreamLogs(owner: string, name: string, buildNumber: number, processId: number): Observable<any> {
     return Observable.create(observer => {
-      const eventSource = new this.eventSource(environment.droneBaseUrl + this.buildBasePath(owner, name, '/stream/logs/') + '/' + buildNumber + '/' + processId);
+      const eventSource = new this.eventSource(environment.baseUrl + this.buildBasePath(owner, name, '/stream/logs/') + '/' + buildNumber + '/' + processId);
       eventSource.onmessage = logs => this.zone.run(() => observer.next(JSON.parse(logs.data)));
       eventSource.onerror = error => this.zone.run(() => observer.error(error));
       return () => eventSource.close();
     });
-    
+
   }
 
   public getRepositoy(owner: string, name: string): Promise<Repository> {
@@ -93,10 +92,10 @@ export class RepositoryService {
   }
 
   private buildBasePath(owner: string, name: string, otherPath?: string): string {
-    if(otherPath) {
-      return otherPath + owner + '/' + name;      
+    if (otherPath) {
+      return otherPath + owner + '/' + name;
     } else {
-      return this.basePath + owner + '/' + name;      
+      return this.basePath + owner + '/' + name;
     }
   }
 

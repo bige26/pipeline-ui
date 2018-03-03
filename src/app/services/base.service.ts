@@ -57,13 +57,7 @@ export class BaseService {
 
   private buildUrl(path: string, param: string | number, queryParams: Object): string {
     param = param ? '/' + param : '';
-    let baseUrl = '';
-    if (path.match('/clusters') || path.match('/secrets')) {
-      baseUrl = environment.clusterBaseUrl;
-    } else {
-      baseUrl = environment.droneBaseUrl;
-    }
-    return `${baseUrl}${path}${param}${this.buildQueryParams(queryParams)}`;
+    return `${environment.baseUrl}${path}${param}${this.buildQueryParams(queryParams)}`;
   }
 
   private buildQueryParams(queryParams: Object) {

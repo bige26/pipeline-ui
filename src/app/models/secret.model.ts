@@ -33,7 +33,7 @@ export interface SecretResponse {
 }
 
 export interface Secret {
-  id: string;
+  id: number;
   name: string;
   type: SECRET_TYPES;
   values: Array<SecretValue>;
