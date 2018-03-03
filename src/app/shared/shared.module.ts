@@ -6,7 +6,7 @@ import {MatIconModule} from '@angular/material';
 import {ElabsedTimePipe} from './pipes/elabsed-time.pipe';
 import {MaskPipe} from './pipes/mask.pipe';
 import {AlertModule} from 'ngx-alerts';
-import {AccordionModule, ModalModule} from 'ngx-bootstrap';
+import {AccordionModule} from 'ngx-bootstrap';
 import {AuthService} from '../services/auth.service';
 import {BaseService} from '../services/base.service';
 import {AuthGuard} from '../services/auth.guard';
@@ -17,6 +17,7 @@ import {DeploymentService} from '../services/deployment.service';
 import {StatusService} from '../services/status.service';
 import {FilterPipe} from './pipes/filter.pipe';
 import {SecretService} from '../services/secret.service';
+import {ModalModule} from 'ngx-modal';
 
 @NgModule({
   declarations: [
