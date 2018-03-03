@@ -64,7 +64,8 @@
           <div class="col-xs-1 col-sm-1">
             <img src="../../../../assets/images/aws_icon.ico" class="cluster-icons" *ngIf="cluster.cloud === 'amazon'">
             <img src="../../../../assets/images/azure_icon.png" class="cluster-icons" *ngIf="cluster.cloud === 'azure'">
-            <img src="../../../../assets/images/google_icon.png" class="cluster-icons" *ngIf="cluster.cloud === 'google'">
+            <img src="../../../../assets/images/google_icon.png" class="cluster-icons"
+                 *ngIf="cluster.cloud === 'google'">
           </div>
           <div class="col-xs-2 col-sm-2 cluster-row-height">
             <span class="vertical-middle">
@@ -101,7 +102,8 @@
               <button type="button" class="btn btn-default" (click)="downloadConfig($event, cluster.id)">
                 <span class="glyphicon glyphicon-download-alt"></span>
               </button>
-              <button type="button" class="btn btn-danger" (click)="removeCluster($event, cluster)">
+              <button type="button" class="btn btn-danger"
+                      (click)="openDeleteModal($event, cluster, deleteModal)">
                 <span class="glyphicon glyphicon-remove"></span>
               </button>
             </div>
@@ -128,3 +130,23 @@
     </div>
   </div>
 </div>
+
+<!--Cluster delete dialog modal-->
+<modal #deleteModal modalClass="modal-md">
+  <modal-header>
+    <h4>Are you absolutely sure?</h4>
+  </modal-header>
+  <modal-content>
+    <div class="cluster-delete-modal-content">
+      Please type in the name of the cluster to confirm.
+      <input class="form-control" [placeholder]="selectedClusterName" [(ngModel)]="deletedClusterName">
+    </div>
+  </modal-content>
+  <modal-footer>
+    <button type="button" class="btn btn-default" (click)="deleteModal.close()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="deleteCluster();deleteModal.close()"
+            [disabled]="deletedClusterName !== selectedClusterName">
+      Delete
+    </button>
+  </modal-footer>
+</modal>

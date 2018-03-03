@@ -8,35 +8,23 @@ import {AlertModule} from 'ngx-alerts';
 import {AppComponent} from './app.component';
 import {LoginComponent} from './components/login/login.component';
 import {SharedModule} from './shared/shared.module';
-import {AccordionModule, ModalModule} from 'ngx-bootstrap';
+import {AccordionModule} from 'ngx-bootstrap';
 import {BaseInterceptor} from './services/interceptors/base-interceptor';
 import {AuthService} from './services/auth.service';
-import {ClusterDeleteModalComponent} from './modules/cluster/cluster-delete-modal/cluster-delete-modal.component';
-import {SecretCreateComponent} from './modules/cluster/secret-create/secret-create.component';
-import {SecretDeleteComponent} from './modules/cluster/secret-delete/secret-delete.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
-    ClusterDeleteModalComponent,
-    SecretCreateComponent,
-    SecretDeleteComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    ModalModule.forRoot(),
     SharedModule.forRoot(),
     AccordionModule.forRoot(),
     AlertModule.forRoot({timeout: 3000}),
-  ],
-  entryComponents: [
-    ClusterDeleteModalComponent,
-    SecretCreateComponent,
-    SecretDeleteComponent
   ],
   bootstrap: [AppComponent],
   providers: [

@@ -2,11 +2,10 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {ClusterService} from '../../../services/cluster.service';
 import {ClusterRepresentation} from '../../../models/cluster.model';
-import {AlertService} from "ngx-alerts";
+import {AlertService} from 'ngx-alerts';
 import {saveAs} from 'file-saver';
-import {BsModalService} from "ngx-bootstrap";
-import {ClusterDeleteModalComponent} from "../cluster-delete-modal/cluster-delete-modal.component";
-import {Subscription} from "rxjs/Subscription";
+import {Subscription} from 'rxjs/Subscription';
+import {Modal} from 'ngx-modal';
 
 
 @Component({
@@ -21,15 +20,18 @@ export class ClusterListComponent implements OnInit, OnDestroy {
   public clusters: Array<ClusterRepresentation> = [];
 
   public isLoading: boolean;
-  public clusterPageCount: number = 8;
+  public clusterPageCount = 8;
   public page = 1;
   public searchData = '';
+
+  public selectedClusterId: number;
+  public selectedClusterName = '';
+  public deletedClusterName = '';
 
   private deleteDialogSub: Subscription;
 
   constructor(private router: Router,
               private alertService: AlertService,
-              private modalService: BsModalService,
               private clusterService: ClusterService) {
   }
 
@@ -50,20 +52,26 @@ export class ClusterListComponent implements OnInit, OnDestroy {
   }
 
 
-  removeCluster(event, clusterRepresentation: ClusterRepresentation) {
+  openDeleteModal(event, selected: ClusterRepresentation, deleteModal: Modal) {
     event.stopPropagation();
-    const deleteDialog = this.modalService.show(ClusterDeleteModalComponent, {class: 'cluster-delete-modal-dialog'});
-    let dialogContent = (<ClusterDeleteModalComponent>deleteDialog.content)
-    dialogContent.clusterName = clusterRepresentation.name;
-    dialogContent.clusterId = clusterRepresentation.id;
+    this.selectedClusterId = selected.id;
+    this.selectedClusterName = selected.name;
+    deleteModal.open();
+  }
+
+  deleteCluster() {
+    this.clusterService.deleteCluster(this.selectedClusterId).then(value => {
+      this.alertService.success(value.message);
+    }).catch(reason => this.alertService.danger('Cluster delete error!'));
+    this.deletedClusterName = '';
   }
 
   downloadConfig(event, id: number) {
     event.stopPropagation();
     this.clusterService.fetchClusterConfig(id).then(value => {
       const blob = new Blob([atob(value.data)], {type: 'application/yaml'});
-      saveAs(blob, this.CLUSTER_CONFIG_FILE_NAME)
-    })
+      saveAs(blob, this.CLUSTER_CONFIG_FILE_NAME);
+    });
   }
 
   private startLoading() {

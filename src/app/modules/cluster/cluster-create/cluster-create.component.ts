@@ -10,11 +10,17 @@ import {
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {ClusterService} from '../../../services/cluster.service';
 import {AlertService} from 'ngx-alerts';
-import {Secret, SECRET_CLOUD_TYPE, SECRET_TYPES} from '../../../models/secret.model';
-import {BsModalService} from 'ngx-bootstrap';
-import {SecretCreateComponent} from '../secret-create/secret-create.component';
+import {
+  AMAZON_SECRET_VALUE_KEYS,
+  AZURE_SECRET_VALUE_KEYS,
+  CreateSecret,
+  Secret,
+  SECRET_CLOUD_TYPE,
+  SECRET_TYPES,
+  SecretValue
+} from '../../../models/secret.model';
 import {SecretService} from '../../../services/secret.service';
-import {SecretDeleteComponent} from '../secret-delete/secret-delete.component';
+import {Modal} from 'ngx-modal';
 
 @Component({
   selector: 'app-create-cluster',
@@ -23,27 +29,24 @@ import {SecretDeleteComponent} from '../secret-delete/secret-delete.component';
 })
 export class ClusterCreateComponent implements OnInit {
 
+  // Cluster forms
   public createClusterForm: FormGroup;
   public azureCreateForm: FormGroup;
   public amazonCreateForm: FormGroup;
   public googleCreateForm: FormGroup;
 
-  public secrets: Array<Secret> = [{
-    id: 10,
-    name: 'amazon',
-    type: SECRET_TYPES.AMAZON,
-    values: []
-  }, {
-    id: 12,
-    name: 'azure',
-    type: SECRET_TYPES.AZURE,
-    values: []
-  }];
+  // Secret forms
+  public amazonSecretForm: FormGroup;
+  public azureSecretForm: FormGroup;
+  public googleSecretForm: FormGroup;
+
+  public secrets: Array<Secret> = [];
   public providers: Array<ClusterProvider> = [];
   public step = 1;
   public page = 1;
   public secretSearchData = '';
   public selectedCloudType = null;
+  public selectedSecretId: number;
   public steps: Array<{ step: number, label: string, status: string }> = [
     {
       step: 1,
@@ -65,7 +68,6 @@ export class ClusterCreateComponent implements OnInit {
   constructor(private alertService: AlertService,
               private clusterService: ClusterService,
               private formBuilder: FormBuilder,
-              private modalService: BsModalService,
               private secretService: SecretService,
               private router: Router) {
   }
@@ -74,6 +76,7 @@ export class ClusterCreateComponent implements OnInit {
     this.providers = CLUSTER_CLOUD_TYPES;
 
     this.initClusterCreateForm();
+    this.initSecretCreateForm();
   }
 
   createCluster() {
@@ -83,18 +86,50 @@ export class ClusterCreateComponent implements OnInit {
   }
 
   createSecret() {
-    const createDialog = this.modalService.show(SecretCreateComponent);
-    const dialogContent = (<SecretCreateComponent>createDialog.content);
-    dialogContent.secretType = this.selectedCloudType;
+    let secretRq: CreateSecret;
+    switch (this.selectedCloudType) {
+      case CLOUD_TYPE.AZURE: {
+        secretRq = {
+          name: this.azureSecretForm.get('name').value,
+          type: SECRET_TYPES.AZURE,
+          values: this.getAzureSecretValues()
+        };
+        break;
+      }
+      case CLOUD_TYPE.AMAZON: {
+        secretRq = {
+          name: this.amazonSecretForm.get('name').value,
+          type: SECRET_TYPES.AMAZON,
+          values: this.getAmazonSecretValues()
+        };
+        break;
+      }
+      case CLOUD_TYPE.GOOGLE: {
+      }
+    }
+
+    this.secretService.createSecret(secretRq).then(value => {
+      this.alertService.success('Secrets created!');
+      // TODO: refresh secret list
+    }).catch(reason => {
+      this.alertService.danger('Secrets create error!');
+    });
   }
 
-  removeSecret(event, id: number) {
+  deleteSecret() {
+    this.secretService.deleteSecret(this.selectedSecretId).then(value => {
+      this.alertService.success('Secret deleted!');
+    }).catch(reason => this.alertService.danger('Secret delete error!'));
+  }
+
+  openCreateSecretDialog(modal: Modal) {
+    modal.open();
+  }
+
+  openDeleteModal(event, id: number, deleteModal: Modal) {
     event.stopPropagation();
-    const deleteDialog = this.modalService.show(SecretDeleteComponent);
-    const dialogContent = (<SecretDeleteComponent>deleteDialog.content);
-    dialogContent.secretId = id;
-    // TODO: orgid?!
-    dialogContent.orgId = 1;
+    this.selectedSecretId = id;
+    deleteModal.open();
   }
 
   selectCloudType(type: string) {
@@ -127,15 +162,41 @@ export class ClusterCreateComponent implements OnInit {
     return this.step;
   }
 
-  isInvalidForm(): boolean {
+  isInvalidClusterForm(): boolean {
     return this.createClusterForm.invalid || (this.amazonCreateForm.invalid &&
       this.azureCreateForm.invalid && this.googleCreateForm.invalid);
+  }
+
+  isInvalidSecretForm(): boolean {
+    switch (this.selectedCloudType) {
+      case CLOUD_TYPE.AZURE:
+        return this.azureSecretForm.invalid;
+      case CLOUD_TYPE.AMAZON:
+        return this.amazonSecretForm.invalid;
+      case CLOUD_TYPE.GOOGLE:
+        return this.googleSecretForm.invalid;
+    }
   }
 
   private initSecrets() {
     this.secretService.getSecrets().then(value => {
     });
     this.secrets = this.secrets.filter(_ => _.type === SECRET_CLOUD_TYPE.get(this.selectedCloudType));
+  }
+
+  private initSecretCreateForm() {
+    this.amazonSecretForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      accessKeyId: ['', Validators.required],
+      secretAccessKeyId: ['', Validators.required]
+    });
+    this.azureSecretForm = this.formBuilder.group({
+      name: ['', Validators.required],
+      clientSecret: ['', Validators.required],
+      clientId: ['', Validators.required],
+      tenantId: ['', Validators.required],
+      subscriptionId: ['', Validators.required]
+    });
   }
 
   private initClusterCreateForm() {
@@ -175,6 +236,12 @@ export class ClusterCreateComponent implements OnInit {
     this.amazonCreateForm.reset();
     this.azureCreateForm.reset();
     this.googleCreateForm.reset();
+  }
+
+  private resetSecretForms() {
+    this.amazonSecretForm.reset();
+    this.azureSecretForm.reset();
+    // this.googleSecretForm.reset();
   }
 
   private getCreateClusterRq(): CreateClusterRequest {
@@ -250,6 +317,39 @@ export class ClusterCreateComponent implements OnInit {
       amazon: null,
       google: null
     };
+  }
+
+  private getAmazonSecretValues(): Array<SecretValue> {
+    return [
+      {
+        key: AMAZON_SECRET_VALUE_KEYS.AWS_ACCESS_KEY_ID,
+        value: this.amazonSecretForm.get('accessKeyId').value
+      },
+      {
+        key: AMAZON_SECRET_VALUE_KEYS.AWS_SECRET_ACCESS_KEY,
+        value: this.amazonSecretForm.get('secretAccessKeyId').value
+      }];
+  }
+
+  private getAzureSecretValues(): Array<SecretValue> {
+    return [
+      {
+        key: AZURE_SECRET_VALUE_KEYS.AZURE_CLIENT_SECRET,
+        value: this.azureSecretForm.get('clientSecret').value
+      },
+      {
+        key: AZURE_SECRET_VALUE_KEYS.AZURE_CLIENT_ID,
+        value: this.azureSecretForm.get('clientId').value
+      },
+      {
+        key: AZURE_SECRET_VALUE_KEYS.AZURE_SUBSCRIPTION_ID,
+        value: this.azureSecretForm.get('subscriptionId').value
+      },
+      {
+        key: AZURE_SECRET_VALUE_KEYS.AZURE_TENANT_ID,
+        value: this.azureSecretForm.get('tenantId').value
+      }
+    ];
   }
 
 }

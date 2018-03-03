@@ -46,7 +46,7 @@
           </div>
           <div class="col-sm-4">
             <div class="secret-create-button text-right">
-              <button type="button" class="btn btn-success" (click)="createSecret()">
+              <button type="button" class="btn btn-success" (click)="createModal.open()">
                 Create secret
               </button>
             </div>
@@ -63,7 +63,8 @@
             {{secret.name}}
           </div>
           <div class="col-md-6 text-right">
-            <button type="button" class="btn btn-danger btn-xs" (click)="removeSecret($event, secret.id)">
+            <button type="button" class="btn btn-danger btn-xs"
+                    (click)="openDeleteModal($event, secret.id, deleteModal)">
               <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
             </button>
           </div>
@@ -173,10 +174,87 @@
       </div>
 
       <div class="btn-group">
-        <button type="submit" class="btn btn-success" (click)="createCluster()" [disabled]="isInvalidForm()">
+        <button type="submit" class="btn btn-success" (click)="createCluster()"
+                [disabled]="isInvalidClusterForm()">
           Create
         </button>
       </div>
     </form>
   </div>
 </div>
+
+<!--Secret delete dialog modal-->
+<modal #deleteModal modalClass="modal-md">
+  <modal-header>
+    <h4>Delete modal</h4>
+  </modal-header>
+  <modal-content>
+    <h4>Do you want to delete?</h4>
+  </modal-content>
+  <modal-footer>
+    <button type="button" class="btn btn-default" (click)="deleteModal.close()">Cancel</button>
+    <button type="button" class="btn btn-danger" (click)="deleteSecret();deleteModal.close()">
+      Delete
+    </button>
+  </modal-footer>
+</modal>
+
+<!--Secret create dialog modal-->
+<modal #createModal modalClass="modal-md" (onClose)="resetSecretForms()">
+  <modal-header>
+    <h4>Create secret</h4>
+  </modal-header>
+  <modal-content>
+    <form class="secret-form">
+      <div *ngIf="selectedCloudType === 'amazon'" [formGroup]="amazonSecretForm">
+        <div class="form-group form-inline">
+          <label for="amazonName" class="form-inline">Name</label>
+          <input id="amazonName" class="form-control" formControlName="name">
+        </div>
+        <div class="form-group form-inline">
+          <label for="accessKeyId" class="form-inline">Access key</label>
+          <input id="accessKeyId" class="form-control" formControlName="accessKeyId">
+        </div>
+        <div class="form-group form-inline">
+          <label for="secretAccessKeyId" class="form-inline">Secret access key</label>
+          <input id="secretAccessKeyId" class="form-control" formControlName="secretAccessKeyId">
+        </div>
+      </div>
+
+      <div *ngIf="selectedCloudType === 'azure'" [formGroup]="azureSecretForm">
+        <div class="form-group form-inline">
+          <label for="azureName" class="form-inline">Name</label>
+          <input id="azureName" class="form-control" formControlName="name">
+        </div>
+        <div class="form-group form-inline">
+          <label for="clientSecret" class="form-inline">Client secret</label>
+          <input id="clientSecret" class="form-control" formControlName="clientSecret">
+        </div>
+        <div class="form-group form-inline">
+          <label for="clientId" class="form-inline">Client id</label>
+          <input id="clientId" class="form-control" formControlName="clientId">
+        </div>
+        <div class="form-group form-inline">
+          <label for="clientSecret" class="form-inline">Tentant id</label>
+          <input id="tenantId" class="form-control" formControlName="tenantId">
+        </div>
+        <div class="form-group form-inline">
+          <label for="clientSecret" class="form-inline">Subscription id</label>
+          <input id="subscriptionId" class="form-control" formControlName="subscriptionId">
+        </div>
+      </div>
+
+      <div *ngIf="selectedCloudType === 'google'">
+      </div>
+
+    </form>
+
+  </modal-content>
+  <modal-footer>
+    <button type="button" class="btn btn-default" (click)="createModal.close()">Cancel</button>
+    <button type="button" class="btn btn-success" (click)="createSecret();createModal.close()"
+            [disabled]="isInvalidSecretForm()">
+      Create
+    </button>
+  </modal-footer>
+</modal>
