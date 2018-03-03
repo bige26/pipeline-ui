@@ -1,11 +1,15 @@
 import {Injectable} from '@angular/core';
+import {BaseService} from './base.service';
+import {Token} from '../models/auth.model'
 
 @Injectable()
 export class AuthService {
 
-  private token = 'droneToken';
+  private token = 'token';
 
-  constructor() {
+  private basePath = '/pipeline/api/v1/token';  
+
+  constructor(private baseService: BaseService) {
   }
 
   public remove() {
@@ -27,6 +31,10 @@ export class AuthService {
 
   public getToken() {
     return sessionStorage.getItem(this.token);
+  }
+
+  public getPipelineToken(): Promise<Token> {
+    return this.baseService.get<Token>(this.basePath);
   }
 
 }

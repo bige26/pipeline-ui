@@ -26,6 +26,12 @@ export class AppComponent implements OnInit {
       if (event instanceof NavigationEnd) {
         this.currentRoute = event.url;
         if (event.url !== '/login' && this.authService.getToken() !== null) {
+          //ToDo: activate in prod and if redirect is working 
+          /*
+          this.authService.getPipelineToken().then(resp => {
+            this.authService.setToken(resp.token);
+          });
+          */         
           this.userService.getUser().then(response => {
             this.userData = response;
           });

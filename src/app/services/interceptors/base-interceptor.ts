@@ -13,8 +13,13 @@ export class BaseInterceptor implements HttpInterceptor {
   }
 
   private getHeaders(req: HttpRequest<any>) {
-    const headers: HttpHeaders = new HttpHeaders().append('Content-Type', 'application/json')
-      .append('Authorization', this.authService.getBearerToken());
+    
+    let headers: HttpHeaders = new HttpHeaders().append('Content-Type', 'application/json');
+
+    if(!req.url.endsWith("/token")) {
+      headers = headers.append('Authorization', this.authService.getBearerToken());
+    }
+
     return {
       headers: headers
     };

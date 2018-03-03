@@ -1,13 +1,11 @@
 import {Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse} from '@angular/common/http';
-import {AuthService} from './auth.service';
 import {environment} from '../../environments/environment';
 
 @Injectable()
 export class BaseService {
 
-  constructor(private http: HttpClient,
-              private authService: AuthService) {
+  constructor(private http: HttpClient) {
   }
 
   public get<T>(path: string, param: string | number = '', queryParams: Object = {}): Promise<T> {
