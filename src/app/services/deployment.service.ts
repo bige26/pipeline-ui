@@ -5,7 +5,7 @@ import {CreateHelmDeploymentResponse, DeploymentStatusResponse, HelmDeploymentTy
 @Injectable()
 export class DeploymentService {
 
-  private basePath = '/clusters/';
+  private basePath = '/pipeline/api/v1/clusters/';
 
   constructor(private baseService: BaseService) {
   }

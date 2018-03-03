@@ -8,7 +8,7 @@ import {Observable} from 'rxjs';
 @Injectable()
 export class UserService {
 
-  public basePath = '/api/user';
+  public basePath = '/build/api/user';
   private timer = Observable.timer(0, 1500);
 
   constructor(private baseService: BaseService) {

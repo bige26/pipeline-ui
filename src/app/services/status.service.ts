@@ -5,7 +5,7 @@ import {Status} from '../models/cluster.model';
 @Injectable()
 export class StatusService {
 
-  private basePath = '/status';
+  private basePath = '/pipeline/api/v1/status';
 
   constructor(private baseService: BaseService) {
   }

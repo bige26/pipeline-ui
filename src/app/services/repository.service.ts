@@ -11,7 +11,7 @@ import {environment} from '../../environments/environment';
 @Injectable()
 export class RepositoryService {
 
-  private basePath: string = '/api/repos/';
+  private basePath: string = '/build/api/repos/';
   private buildTimer = Observable.timer(0, 2000);
   private buildDetailsTimer = Observable.timer(0, 5000);
   private eventSource: any = window['EventSource'];

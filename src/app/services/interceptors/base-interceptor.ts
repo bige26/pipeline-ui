@@ -1,6 +1,6 @@
-import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from "@angular/common/http";
-import {Observable} from "rxjs/Observable";
-import {AuthService} from "../auth.service";
+import {HttpEvent, HttpHandler, HttpHeaders, HttpInterceptor, HttpRequest} from '@angular/common/http';
+import {Observable} from 'rxjs/Observable';
+import {AuthService} from '../auth.service';
 
 export class BaseInterceptor implements HttpInterceptor {
 
@@ -13,14 +13,11 @@ export class BaseInterceptor implements HttpInterceptor {
   }
 
   private getHeaders(req: HttpRequest<any>) {
-    let headers: HttpHeaders = new HttpHeaders().append('Content-Type', 'application/json');
-
-    headers = Object.assign(headers, headers.set('Authorization', this.authService.getBearerToken()));
-    
-
+    const headers: HttpHeaders = new HttpHeaders().append('Content-Type', 'application/json')
+      .append('Authorization', this.authService.getBearerToken());
     return {
       headers: headers
-    }
+    };
   }
 
 }
