@@ -36,7 +36,7 @@ export class ClusterListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.updateClusterList();
+    this.refreshClusters();
   }
 
   addCluster() {
@@ -53,7 +53,7 @@ export class ClusterListComponent implements OnInit, OnDestroy {
   deleteCluster() {
     this.clusterService.deleteCluster(this.selectedClusterId).then(value => {
       this.alertService.success(value.message);
-      this.updateClusterList();
+      this.refreshClusters();
     }).catch(reason => this.alertService.danger('Cluster delete error!'));
     this.deletedClusterName = '';
   }
@@ -73,7 +73,7 @@ export class ClusterListComponent implements OnInit, OnDestroy {
     }
   }
 
-  private updateClusterList() {
+  private refreshClusters() {
     this.startLoading();
     this.clusterService.getClusters().then(value => {
       if (value.data) {

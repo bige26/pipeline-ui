@@ -47,6 +47,7 @@ export class ClusterCreateComponent implements OnInit {
   public secretSearchData = '';
   public selectedCloudType = null;
   public selectedSecretId: number;
+  public isLoading = false;
   public steps: Array<{ step: number, label: string, status: string }> = [
     {
       step: 1,
@@ -110,7 +111,7 @@ export class ClusterCreateComponent implements OnInit {
 
     this.secretService.createSecret(secretRq).then(value => {
       this.alertService.success('Secrets created!');
-      // TODO: refresh secret list
+      this.refreshSecrets();
     }).catch(reason => {
       this.alertService.danger('Secrets create error!');
     });
@@ -119,11 +120,8 @@ export class ClusterCreateComponent implements OnInit {
   deleteSecret() {
     this.secretService.deleteSecret(this.selectedSecretId).then(value => {
       this.alertService.success('Secret deleted!');
+      this.refreshSecrets();
     }).catch(reason => this.alertService.danger('Secret delete error!'));
-  }
-
-  openCreateSecretDialog(modal: Modal) {
-    modal.open();
   }
 
   openDeleteModal(event, id: number, deleteModal: Modal) {
@@ -135,7 +133,8 @@ export class ClusterCreateComponent implements OnInit {
   selectCloudType(type: string) {
     this.selectedCloudType = type;
     this.createClusterForm.get('cloud').setValue(type);
-    this.initSecrets();
+
+    this.refreshSecrets();
     this.nextStep();
   }
 
@@ -178,10 +177,13 @@ export class ClusterCreateComponent implements OnInit {
     }
   }
 
-  private initSecrets() {
+  private refreshSecrets() {
+    this.startLoading();
     this.secretService.getSecrets().then(value => {
-    });
-    this.secrets = this.secrets.filter(_ => _.type === SECRET_CLOUD_TYPE.get(this.selectedCloudType));
+      this.secrets = value.secrets.filter(_ =>
+        _.type === SECRET_CLOUD_TYPE.get(this.selectedCloudType));
+      this.stopLoading();
+    }).catch(reason => this.stopLoading());
   }
 
   private initSecretCreateForm() {
@@ -350,6 +352,14 @@ export class ClusterCreateComponent implements OnInit {
         value: this.azureSecretForm.get('tenantId').value
       }
     ];
+  }
+
+  private startLoading() {
+    this.isLoading = true;
+  }
+
+  private stopLoading() {
+    this.isLoading = false;
   }
 
 }
