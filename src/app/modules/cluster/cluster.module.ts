@@ -5,6 +5,9 @@ import {ClusterComponent} from './cluster.component';
 import {ClusterRoutingModule} from './cluster-routing.module';
 import {ClusterListComponent} from './cluster-list/cluster-list.component';
 import {ClusterDetailComponent} from './cluster-detail/cluster-detail.component';
+import {SecretService} from '../../services/cluster/secret.service';
+import {ClusterService} from '../../services/cluster/cluster.service';
+import {ProfileService} from '../../services/cluster/profile.service';
 
 @NgModule({
   imports: [
@@ -16,6 +19,11 @@ import {ClusterDetailComponent} from './cluster-detail/cluster-detail.component'
     ClusterCreateComponent,
     ClusterListComponent,
     ClusterDetailComponent
+  ],
+  providers: [
+    SecretService,
+    ClusterService,
+    ProfileService
   ]
 })
 export class ClusterModule {

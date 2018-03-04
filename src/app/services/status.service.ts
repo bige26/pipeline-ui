@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from './base.service';
-import {Status} from '../models/cluster.model';
+import {Status} from '../models/cluster/cluster.model';
 
 @Injectable()
 export class StatusService {

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {BaseService} from './base.service';
+import {BaseService} from '../base.service';
 import {
   ClusterEndpointsResponse,
   ClusterRepresentationResponse,
@@ -11,8 +11,8 @@ import {
   GetClusterInfoAmazon,
   GetClusterInfoAzure,
   UpdateClusterRequest
-} from '../models/cluster.model';
-import {BansaiHelmInstall} from '../models/deployment.model';
+} from '../../models/cluster/cluster.model';
+import {BansaiHelmInstall} from '../../models/deployment.model';
 
 @Injectable()
 export class ClusterService {

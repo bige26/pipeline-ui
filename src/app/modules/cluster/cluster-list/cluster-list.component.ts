@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
-import {ClusterService} from '../../../services/cluster.service';
-import {ClusterRepresentation} from '../../../models/cluster.model';
+import {ClusterService} from '../../../services/cluster/cluster.service';
+import {ClusterRepresentation} from '../../../models/cluster/cluster.model';
 import {AlertService} from 'ngx-alerts';
 import {saveAs} from 'file-saver';
 import {Subscription} from 'rxjs/Subscription';

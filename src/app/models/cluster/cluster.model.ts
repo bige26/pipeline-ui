@@ -32,7 +32,7 @@ export interface CreateClusterRequest {
   properties: CreateClusterProperties;
 }
 
-export interface CreateClusterGoogleProperties {
+export interface GoogleClusterProperties {
   project: string;
   node: GoogleNode;
   master: GoogleMaster;
@@ -48,12 +48,12 @@ export interface GoogleNode {
 }
 
 export interface CreateClusterProperties {
-  amazon: CreateClusterAmazonProperties;
-  azure: CreateClusterAzureProperties;
-  google: CreateClusterGoogleProperties;
+  amazon: AmazonClusterProperties;
+  azure: AzureClusterProperties;
+  google: GoogleClusterProperties;
 }
 
-export interface CreateClusterAmazonProperties {
+export interface AmazonClusterProperties {
   node: CreateAmazonNode;
   master: CreateAmazonMaster;
 }
@@ -77,7 +77,7 @@ export interface CreateAzureNode {
   kubernetesVersion: string;
 }
 
-export interface CreateClusterAzureProperties {
+export interface AzureClusterProperties {
   node: CreateAzureNode;
 }
 

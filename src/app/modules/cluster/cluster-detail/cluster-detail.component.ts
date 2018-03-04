@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnDestroy, OnInit} from '@angular/core';
-import {ClusterEndpoint, ClusterRepresentation} from "../../../models/cluster.model";
-import {ClusterService} from "../../../services/cluster.service";
-import {Subscription} from "rxjs/Subscription";
+import {ClusterEndpoint, ClusterRepresentation} from '../../../models/cluster/cluster.model';
+import {ClusterService} from '../../../services/cluster/cluster.service';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-cluster-detail',

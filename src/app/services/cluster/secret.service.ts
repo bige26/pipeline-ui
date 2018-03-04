@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
-import {BaseService} from './base.service';
-import {CreateSecret, SecretResponse} from '../models/secret.model';
+import {BaseService} from '../base.service';
+import {CreateSecret, SecretResponse} from '../../models/cluster/secret.model';
 
 @Injectable()
 export class SecretService {

@@ -6,9 +6,9 @@ import {
   ClusterProvider,
   CreateClusterProperties,
   CreateClusterRequest
-} from '../../../models/cluster.model';
+} from '../../../models/cluster/cluster.model';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {ClusterService} from '../../../services/cluster.service';
+import {ClusterService} from '../../../services/cluster/cluster.service';
 import {AlertService} from 'ngx-alerts';
 import {
   AMAZON_SECRET_VALUE_KEYS,
@@ -18,8 +18,8 @@ import {
   SECRET_CLOUD_TYPE,
   SECRET_TYPES,
   SecretValue
-} from '../../../models/secret.model';
-import {SecretService} from '../../../services/secret.service';
+} from '../../../models/cluster/secret.model';
+import {SecretService} from '../../../services/cluster/secret.service';
 import {Modal} from 'ngx-modal';
 
 @Component({

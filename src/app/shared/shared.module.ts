@@ -12,11 +12,9 @@ import {BaseService} from '../services/base.service';
 import {AuthGuard} from '../services/auth.guard';
 import {UserService} from '../services/user.service';
 import {DurationTimePipe} from './pipes/duration-time.pipe';
-import {ClusterService} from '../services/cluster.service';
 import {DeploymentService} from '../services/deployment.service';
 import {StatusService} from '../services/status.service';
 import {FilterPipe} from './pipes/filter.pipe';
-import {SecretService} from '../services/secret.service';
 import {ModalModule} from 'ngx-modal';
 
 @NgModule({
@@ -52,10 +50,8 @@ export class SharedModule {
         BaseService,
         AuthGuard,
         UserService,
-        ClusterService,
         DeploymentService,
-        StatusService,
-        SecretService
+        StatusService
       ]
     };
   }
