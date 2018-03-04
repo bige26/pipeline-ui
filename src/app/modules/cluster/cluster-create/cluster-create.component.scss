@@ -32,6 +32,14 @@
   padding-right: 5px;
 }
 
+.secret-form {
+  text-align: center;
+  label {
+    width: 140px;
+    text-align: left;
+  }
+}
+
 .step-row {
   width: 80%;
   margin: auto;
@@ -67,10 +75,10 @@
   }
 }
 
-.secret-form {
-  text-align: center;
-  label {
-    width: 140px;
-    text-align: left;
+.cluster-config-select {
+  select {
+    width: 196px;
   }
 }
+
+

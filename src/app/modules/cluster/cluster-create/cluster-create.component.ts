@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Router} from '@angular/router';
 import {
   CLOUD_TYPE,
@@ -7,7 +7,7 @@ import {
   CreateClusterProperties,
   CreateClusterRequest
 } from '../../../models/cluster/cluster.model';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {ClusterService} from '../../../services/cluster/cluster.service';
 import {AlertService} from 'ngx-alerts';
 import {
@@ -21,13 +21,16 @@ import {
 } from '../../../models/cluster/secret.model';
 import {SecretService} from '../../../services/cluster/secret.service';
 import {Modal} from 'ngx-modal';
+import {ProfileService} from '../../../services/cluster/profile.service';
+import {ProfileRepresentation} from '../../../models/cluster/profile.model';
+import {Subscription} from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-create-cluster',
   templateUrl: './cluster-create.component.html',
   styleUrls: ['./cluster-create.component.scss']
 })
-export class ClusterCreateComponent implements OnInit {
+export class ClusterCreateComponent implements OnInit, OnDestroy {
 
   // Cluster forms
   public createClusterForm: FormGroup;
@@ -40,8 +43,11 @@ export class ClusterCreateComponent implements OnInit {
   public azureSecretForm: FormGroup;
   public googleSecretForm: FormGroup;
 
+  public profileControl: FormControl = new FormControl();
+
   public secrets: Array<Secret> = [];
   public providers: Array<ClusterProvider> = [];
+  public profiles: Array<ProfileRepresentation> = [];
   public step = 1;
   public page = 1;
   public secretSearchData = '';
@@ -66,18 +72,21 @@ export class ClusterCreateComponent implements OnInit {
     }
   ];
 
+  private profileChangeSub: Subscription;
+
   constructor(private alertService: AlertService,
               private clusterService: ClusterService,
               private formBuilder: FormBuilder,
               private secretService: SecretService,
+              private profileService: ProfileService,
               private router: Router) {
   }
 
   ngOnInit() {
     this.providers = CLUSTER_CLOUD_TYPES;
 
-    this.initClusterCreateForm();
     this.initSecretCreateForm();
+    this.initClusterCreateForm();
   }
 
   createCluster() {
@@ -132,10 +141,59 @@ export class ClusterCreateComponent implements OnInit {
 
   selectCloudType(type: string) {
     this.selectedCloudType = type;
-    this.createClusterForm.get('cloud').setValue(type);
-
+    this.createClusterForm.get('cloud').setValue(this.selectedCloudType);
     this.refreshSecrets();
     this.nextStep();
+  }
+
+  selectSecret(secret: Secret) {
+    this.profileService.getProfiles(this.selectedCloudType).then(value => {
+      this.profiles = value;
+
+      // set up default config
+      const defaultConfig = this.profiles.find(item => item.instanceName === 'default');
+      this.profileControl.setValue(defaultConfig.instanceName);
+    });
+
+    // subscribe to profile select change
+    this.profileChangeSub = this.profileControl.valueChanges.subscribe(value => {
+      if (value) {
+        this.updateConfigForm(value);
+      }
+    });
+
+    this.nextStep();
+  }
+
+  updateConfigForm(value) {
+    const selected: ProfileRepresentation = this.profiles.find(item => item.instanceName === value);
+    this.createClusterForm.setValue({
+      name: selected.instanceName,
+      location: selected.location,
+      cloud: this.selectedCloudType,
+      nodeInstanceType: selected.nodeInstanceType
+    });
+    switch (this.selectedCloudType) {
+      case CLOUD_TYPE.AMAZON: {
+        this.amazonCreateForm.get('amazonNodeImage').setValue(selected.properties.amazon.node.image);
+        this.amazonCreateForm.get('spotPrice').setValue(selected.properties.amazon.node.spotPrice);
+        this.amazonCreateForm.get('minCount').setValue(selected.properties.amazon.node.minCount);
+        this.amazonCreateForm.get('maxCount').setValue(selected.properties.amazon.node.maxCount);
+        this.amazonCreateForm.get('amazonMasterInstanceType').setValue(
+          selected.properties.amazon.master.instanceType);
+        this.amazonCreateForm.get('amazonMasterImage').setValue(selected.properties.amazon.master.image);
+        break;
+      }
+      case CLOUD_TYPE.AZURE: {
+        this.azureCreateForm.get('resourceGroup').setValue(selected.properties.azure.node.resourceGroup);
+        this.azureCreateForm.get('agentCount').setValue(selected.properties.azure.node.agentCount);
+        this.azureCreateForm.get('agentName').setValue(selected.properties.azure.node.agentName);
+        this.azureCreateForm.get('kubernetesVersion').setValue(selected.properties.azure.node.kubernetesVersion);
+        break;
+      }
+      case CLOUD_TYPE.GOOGLE: {
+      }
+    }
   }
 
   jumpStep(step: number) {
@@ -149,6 +207,8 @@ export class ClusterCreateComponent implements OnInit {
         }
       });
     }
+
+    this.profileControl.reset();
     this.resetCreateClusterForm();
   }
 
@@ -174,6 +234,18 @@ export class ClusterCreateComponent implements OnInit {
         return this.amazonSecretForm.invalid;
       case CLOUD_TYPE.GOOGLE:
         return this.googleSecretForm.invalid;
+    }
+  }
+
+  resetSecretForms() {
+    this.amazonSecretForm.reset();
+    this.azureSecretForm.reset();
+    // this.googleSecretForm.reset();
+  }
+
+  ngOnDestroy() {
+    if (this.profileChangeSub) {
+      this.profileChangeSub.unsubscribe();
     }
   }
 
@@ -205,7 +277,7 @@ export class ClusterCreateComponent implements OnInit {
     this.createClusterForm = this.formBuilder.group({
       name: ['', Validators.required],
       location: ['', Validators.required],
-      cloud: ['', Validators.required],
+      cloud: [this.selectedCloudType, Validators.required],
       nodeInstanceType: ['', Validators.required]
     });
     this.amazonCreateForm = this.formBuilder.group({
@@ -213,9 +285,8 @@ export class ClusterCreateComponent implements OnInit {
       minCount: ['', Validators.required],
       maxCount: ['', Validators.required],
       amazonNodeImage: [''],
-      instanceType: [''],
       amazonMasterImage: [''],
-      amazonNodeInstanceType: ['']
+      amazonMasterInstanceType: ['']
     });
     this.azureCreateForm = this.formBuilder.group({
       resourceGroup: ['', Validators.required],
@@ -238,12 +309,6 @@ export class ClusterCreateComponent implements OnInit {
     this.amazonCreateForm.reset();
     this.azureCreateForm.reset();
     this.googleCreateForm.reset();
-  }
-
-  private resetSecretForms() {
-    this.amazonSecretForm.reset();
-    this.azureSecretForm.reset();
-    // this.googleSecretForm.reset();
   }
 
   private getCreateClusterRq(): CreateClusterRequest {
@@ -297,7 +362,7 @@ export class ClusterCreateComponent implements OnInit {
           spotPrice: this.amazonCreateForm.get('spotPrice').value
         },
         master: {
-          instanceType: this.amazonCreateForm.get('amazonNodeInstanceType').value,
+          instanceType: this.amazonCreateForm.get('amazonMasterInstanceType').value,
           image: this.amazonCreateForm.get('amazonMasterImage').value
         }
       },
