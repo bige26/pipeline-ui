@@ -12,15 +12,15 @@ export interface ClusterProvider {
 export const CLUSTER_CLOUD_TYPES: Array<ClusterProvider> = [
   {
     id: CLOUD_TYPE.AZURE,
-    imgUrl: '../../assets/images/azure.png'
+    imgUrl: 'assets/images/azure.png'
   },
   {
     id: CLOUD_TYPE.AMAZON,
-    imgUrl: '../../assets/images/aws.png'
+    imgUrl: 'assets/images/aws.png'
   },
   {
     id: CLOUD_TYPE.GOOGLE,
-    imgUrl: '../../assets/images/google.png'
+    imgUrl: 'assets/images/google.png'
   }
 ];
 
