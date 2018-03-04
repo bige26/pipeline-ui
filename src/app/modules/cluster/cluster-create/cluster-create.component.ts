@@ -192,6 +192,11 @@ export class ClusterCreateComponent implements OnInit, OnDestroy {
         break;
       }
       case CLOUD_TYPE.GOOGLE: {
+        this.googleCreateForm.get('project').setValue(selected.properties.google.project);
+        this.googleCreateForm.get('masterVersion').setValue(selected.properties.google.master.version);
+        this.googleCreateForm.get('nodeVersion').setValue(selected.properties.google.node.version);
+        this.googleCreateForm.get('count').setValue(selected.properties.google.node.count);
+        break;
       }
     }
   }
@@ -232,8 +237,8 @@ export class ClusterCreateComponent implements OnInit, OnDestroy {
         return this.azureSecretForm.invalid;
       case CLOUD_TYPE.AMAZON:
         return this.amazonSecretForm.invalid;
-      case CLOUD_TYPE.GOOGLE:
-        return this.googleSecretForm.invalid;
+      // case CLOUD_TYPE.GOOGLE:
+      //   return this.googleSecretForm.invalid;
     }
   }
 
@@ -256,6 +261,12 @@ export class ClusterCreateComponent implements OnInit, OnDestroy {
         _.type === SECRET_CLOUD_TYPE.get(this.selectedCloudType));
       this.stopLoading();
     }).catch(reason => this.stopLoading());
+    this.secrets.push({
+      id: 1,
+      name: 'test',
+      type: SECRET_TYPES.AZURE,
+      values: []
+    });
   }
 
   private initSecretCreateForm() {
