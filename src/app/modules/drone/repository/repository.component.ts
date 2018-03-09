@@ -28,7 +28,7 @@ export class RepositoryComponent implements OnInit {
   public getRepositories() {
     this.isLoading.next(true);
     this.userService.getRepositories().then(response => {
-      this.repositories = response;
+      this.repositories = this.orderRepos(response);
       this.isLoading.next(false);
     });
   }
@@ -60,6 +60,13 @@ export class RepositoryComponent implements OnInit {
     };
 
     return params;
+  }
+
+  private orderRepos(repos: Repository[]): Repository[] {
+    let actives = repos.filter(repo => repo.active);
+    let deactives = repos.filter(repo => !repo.active);
+
+    return actives.concat(deactives);
   }
 
 }
