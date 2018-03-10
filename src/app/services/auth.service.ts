@@ -1,13 +1,12 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from './base.service';
-import {Token} from '../models/auth.model'
+import {Token} from '../models/auth.model';
 
 @Injectable()
 export class AuthService {
 
-  private token = 'token';
-
-  private basePath = '/pipeline/api/v1/token';  
+  private token = 'TOKEN';
+  private basePath = '/pipeline/api/v1/token';
 
   constructor(private baseService: BaseService) {
   }

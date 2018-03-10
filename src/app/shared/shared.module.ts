@@ -16,6 +16,7 @@ import {DeploymentService} from '../services/deployment.service';
 import {StatusService} from '../services/status.service';
 import {FilterPipe} from './pipes/filter.pipe';
 import {ModalModule} from 'ngx-modal';
+import {OrganizationService} from '../services/organization.service';
 
 @NgModule({
   declarations: [
@@ -46,12 +47,13 @@ export class SharedModule {
     return {
       ngModule: SharedModule,
       providers: [
+        AuthGuard,
         AuthService,
         BaseService,
-        AuthGuard,
         UserService,
+        StatusService,
         DeploymentService,
-        StatusService
+        OrganizationService
       ]
     };
   }

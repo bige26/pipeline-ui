@@ -1,8 +1,10 @@
 import {Component, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {UserService} from './services/user.service';
 import {User} from './models/user';
 import {AuthService} from './services/auth.service';
+import {OrganizationService} from './services/organization.service';
+import {OrganizationListItemResponse} from './models/organization.model';
 
 @Component({
   selector: 'app-root',
@@ -11,32 +13,41 @@ import {AuthService} from './services/auth.service';
 })
 export class AppComponent implements OnInit {
 
-  public currentRoute: string = null;
   public userData: User;
-  private show = false;
+  public show = false;
+
+  public currentOrg: string;
+  public orgs: Array<OrganizationListItemResponse> = [];
 
   constructor(private router: Router,
+              private authService: AuthService,
               private userService: UserService,
-              private authService: AuthService) {
+              private orgService: OrganizationService) {
   }
 
   ngOnInit() {
     this.show = false;
-    this.router.events.subscribe((event) => {
-      if (event instanceof NavigationEnd) {
-        this.currentRoute = event.url;
-        if (event.url !== '/login' && this.authService.getToken() !== null) {
-          //ToDo: activate in prod and if redirect is working 
-          /*
-          this.authService.getPipelineToken().then(resp => {
-            this.authService.setToken(resp.token);
-          });
-          */         
-          this.userService.getUser().then(response => {
-            this.userData = response;
-          });
+
+    this.authService.getPipelineToken().then(value => {
+      this.authService.setToken(value.token);
+
+      this.userService.getUser().then(response => {
+        this.userData = response;
+      });
+
+      this.orgService.getOrgranizations().then(orgs => {
+        this.orgs = orgs;
+
+        const currentOrg = this.orgService.getCurrentOrganization();
+        if (currentOrg) {
+          this.currentOrg = currentOrg;
+        } else {
+          // TODO: set default org
         }
-      }
+        // this.currentOrg = defaultOrg;
+      });
+    }).catch(reason => {
+      this.authService.setToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOiJodHRwczovL3BpcGVsaW5lLmJhbnphaWNsb3VkLmNvbSIsImp0aSI6ImQwNDU5MWYyLWUyNjctNDlmMC05ODBmLTg0MTQ4OWU3MmFkMiIsImlhdCI6MTUyMDA5Mzk0NCwiaXNzIjoiaHR0cHM6Ly9iYW56YWljbG91ZC5jb20vIiwic3ViIjoiMiIsInNjb3BlIjoiYXBpOmludm9rZSIsInR5cGUiOiJ1c2VyIiwidGV4dCI6ImJpZGE5NCJ9.vhnh0HZc1f-n9r-raY6RkZU38AMPxOFN2ox7jg3TuLw');
     });
   }
 
@@ -47,6 +58,10 @@ export class AppComponent implements OnInit {
 
   public toggleCollapse() {
     this.show = !this.show;
+  }
+
+  public onOrgChange() {
+    this.orgService.setCurrentOrganization(this.currentOrg);
   }
 
 }

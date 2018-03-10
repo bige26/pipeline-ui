@@ -1,4 +1,4 @@
-<nav class="navbar navbar-default navbar-fixed-top" *ngIf="currentRoute !== '/login' && currentRoute !== '/'">
+<nav class="navbar navbar-default navbar-fixed-top">
   <div class="container-fluid">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" (click)="toggleCollapse()" data-toggle="collapse"
@@ -27,8 +27,13 @@
         </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
+        <li>
+          <select id="orgSelect" class="org-select" [(ngModel)]="currentOrg" (change)="onOrgChange()">
+            <option *ngFor="let org of orgs" [value]="org.id">{{org.name}}</option>
+          </select>
+        </li>
         <li class="hidden-xs">
-          <img class="navbar-brand" src="{{userData?.avatar_url}}">
+          <img class="navbar-brand" src="https://avatars3.githubusercontent.com/u/14181875?s=40&v=4">
         </li>
         <!--<li>
           <a href="javascript:void(0)" (click)="logout()">

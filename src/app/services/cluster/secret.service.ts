@@ -1,28 +1,30 @@
 import {Injectable} from '@angular/core';
 import {BaseService} from '../base.service';
 import {CreateSecret, SecretResponse} from '../../models/cluster/secret.model';
+import {OrganizationService} from '../organization.service';
 
 @Injectable()
 export class SecretService {
 
-  constructor(private baseService: BaseService) {
+  constructor(private baseService: BaseService,
+              private orgService: OrganizationService) {
   }
 
-  getSecrets(orgId: number = 1): Promise<SecretResponse> {
-    return this.baseService.get<SecretResponse>(this.createPath(orgId));
+  getSecrets(): Promise<SecretResponse> {
+    return this.baseService.get<SecretResponse>(this.getPath());
   }
 
-  createSecret(secret: CreateSecret, orgId: number = 1) {
-    return this.baseService.post(this.createPath(orgId), secret);
+  createSecret(secret: CreateSecret) {
+    return this.baseService.post(this.getPath(), secret);
   }
 
-  deleteSecret(id: number, orgId: number = 1) {
-    return this.baseService.delete(this.createPath(orgId) + '/' + id);
+  deleteSecret(id: number) {
+    return this.baseService.delete(this.getPath() + '/' + id);
   }
 
-  private createPath(orgId: number) {
-    return `/pipeline/api/v1/org/${orgId}/secrets`;
+  private getPath(): string {
+    const orgId = this.orgService.getCurrentOrganization();
+    return '/pipeline/api/v1/org/' + orgId + '/secrets';
   }
-
 
 }
