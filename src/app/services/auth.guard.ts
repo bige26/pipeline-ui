@@ -13,10 +13,9 @@ export class AuthGuard implements CanActivate, CanActivateChild {
   canActivate(next: ActivatedRouteSnapshot,
               state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 
-    if (!(this.authService.getToken() === undefined || this.authService.getToken() === null)) {
+    if (!this.authService.isInvalidToken()) {
       return true;
     } else {
-      this.router.navigate(['/login']);
       return false;
     }
   }

@@ -32,6 +32,11 @@ export class AuthService {
     return sessionStorage.getItem(this.token);
   }
 
+  public isInvalidToken() {
+    const token = this.getToken();
+    return token === undefined || token === null;
+  }
+
   public getPipelineToken(): Promise<Token> {
     return this.baseService.get<Token>(this.basePath);
   }

@@ -33,7 +33,7 @@
           </select>
         </li>
         <li class="hidden-xs">
-          <img class="navbar-brand" src="https://avatars3.githubusercontent.com/u/14181875?s=40&v=4">
+          <img class="navbar-brand" src="{{userData?.avatar_url}}">
         </li>
         <!--<li>
           <a href="javascript:void(0)" (click)="logout()">
@@ -45,3 +45,22 @@
 </nav>
 <ngx-alerts></ngx-alerts>
 <router-outlet></router-outlet>
+
+<modal #devLoginModal modalClass="modal-md">
+  <modal-header>
+    <h3 class="text-center">Token registration</h3>
+  </modal-header>
+  <modal-content>
+    <div class="panel-body">
+      <form [formGroup]="devRegistrationForm" (ngSubmit)="devReg()">
+        <div class="form-group">
+          <input type="text" class="form-control" formControlName="token" required>
+        </div>
+        <div class="text-center">
+          <button type="submit" class="btn btn-md btn-primary" [disabled]="devRegistrationForm.invalid">Registration
+          </button>
+        </div>
+      </form>
+    </div>
+  </modal-content>
+</modal>
