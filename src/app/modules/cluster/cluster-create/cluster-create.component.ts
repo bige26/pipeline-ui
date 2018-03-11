@@ -257,16 +257,10 @@ export class ClusterCreateComponent implements OnInit, OnDestroy {
   private refreshSecrets() {
     this.startLoading();
     this.secretService.getSecrets().then(value => {
-      this.secrets = value.secrets.filter(_ =>
-        _.type === SECRET_CLOUD_TYPE.get(this.selectedCloudType));
+      this.secrets = value.secrets.filter(secret =>
+        secret.type === SECRET_CLOUD_TYPE.get(this.selectedCloudType));
       this.stopLoading();
     }).catch(reason => this.stopLoading());
-    this.secrets.push({
-      id: 1,
-      name: 'test',
-      type: SECRET_TYPES.AZURE,
-      values: []
-    });
   }
 
   private initSecretCreateForm() {
