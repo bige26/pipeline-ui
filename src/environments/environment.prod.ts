@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  baseUrl: 'http://54.154.150.169'
+  baseUrl: 'http://alpha.dev.banzaicloud.com'
 };
